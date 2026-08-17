@@ -74,6 +74,9 @@ public class Bob {
                     list[listPtr++] = event;
                     printAddition(event, listPtr);
                     break;
+
+                default:
+                    System.out.println("What's that??");
                 
                     
             }
