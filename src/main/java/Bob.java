@@ -27,34 +27,41 @@ public class Bob {
                 for (int i = 0; i < listPtr; i++) {
                     System.out.println((i + 1) + ": " + list[i].getEntryString());
                 }
-            } else if (
-                nextLine.split(" ")[0].equals("mark") || nextLine.split(" ")[0].equals("unmark")
-            ) {
-                String[] parts = nextLine.split(" ");
-                int taskId = Integer.parseInt(parts[1]);
-                if (taskId > listPtr) {
-                    System.out.println("No such task");
-                    System.out.println(horiLines);
-                    continue;
-                }
-                Task task = list[taskId - 1];
-                
-                if (parts[0].equals("mark")) {
-                    task.mark();
-                    System.out.println("Marked as done:");
-                } else {
-                    task.unmark();
-                    System.out.println("Marked as not done:");
-                }
-                
-                System.out.println(task.getEntryString());
-            } else {
-                // if input is anything else
-                System.out.println("added: " + nextLine);
-                list[listPtr++] = new Task(nextLine);
-            }
+                System.out.println(horiLines);
+                continue;
+            }  
+            String[] parts = nextLine.split(" ", 2);
+            String cmd = parts[0];
+            String arg = parts[1];
+            switch (cmd) {
+                case "mark":
+                case "unmark":
+                    int taskId = Integer.parseInt(arg);
+                    if (taskId > listPtr) {
+                        System.out.println("No such task");
+                        System.out.println(horiLines);
+                        continue;
+                    }
+                    Task task = list[taskId - 1];
+                    
+                    if (cmd.equals("mark")) {
+                        task.mark();
+                        System.out.println("Marked as done:");
+                    } else {
+                        task.unmark();
+                        System.out.println("Marked as not done:");
+                    }
+                    
+                    System.out.println(task.getEntryString());
+                    break;
 
+                default:
+                list[listPtr++] = new Task(arg);    
+                System.out.println("added: " + arg);
+                    
+            }
             System.out.println(horiLines);
         }
     }
 }
+
