@@ -18,6 +18,7 @@ public class Bob {
             if (nextLine.equals("bye")) {
                 // if input is "bye"
                 System.out.println("Goodbye.");
+                System.out.println(horiLines);
                 break;
             } else if (nextLine.equals("list")) {
                 // if input is "list"
@@ -28,7 +29,13 @@ public class Bob {
                 nextLine.split(" ")[0].equals("mark") || nextLine.split(" ")[0].equals("unmark")
             ) {
                 String[] parts = nextLine.split(" ");
-                Task task = list[Integer.parseInt(parts[1]) - 1];
+                int taskId = Integer.parseInt(parts[1]);
+                if (taskId > listPtr) {
+                    System.out.println("No such task");
+                    System.out.println(horiLines);
+                    continue;
+                }
+                Task task = list[taskId - 1];
                 
                 if (parts[0].equals("mark")) {
                     task.mark();
