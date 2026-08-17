@@ -11,12 +11,14 @@ public class Bob {
         Scanner sc = new Scanner(System.in);
         while (sc.hasNextLine()) {
             String nextLine = sc.nextLine();
+            System.out.println(horiLines);
             if (nextLine == "bye") {
                 System.out.println("Goodbye.");
                 break;
             }
 
             System.out.println(nextLine);
+            System.out.println(horiLines);
         }
     }
 }
