@@ -24,6 +24,21 @@ public class Bob {
                 for (int i = 0; i < listPtr; i++) {
                     System.out.println((i + 1) + ": " + list[i].getEntryString());
                 }
+            } else if (
+                nextLine.split(" ")[0].equals("mark") || nextLine.split(" ")[0].equals("unmark")
+            ) {
+                String[] parts = nextLine.split(" ");
+                Task task = list[Integer.parseInt(parts[1]) - 1];
+                
+                if (parts[0].equals("mark")) {
+                    task.mark();
+                    System.out.println("Marked as done:");
+                } else {
+                    task.unmark();
+                    System.out.println("Marked as not done:");
+                }
+                
+                System.out.println(task.getEntryString());
             } else {
                 // if input is anything else
                 System.out.println("added: " + nextLine);
