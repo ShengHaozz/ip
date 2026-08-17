@@ -9,7 +9,7 @@ public class Bob {
         System.out.println(horiLines);
 
         Scanner sc = new Scanner(System.in);
-        String[] list = new String[100];
+        Task[] list = new Task[100];
         int listPtr = 0;
 
         while (sc.hasNextLine()) {
@@ -22,12 +22,12 @@ public class Bob {
             } else if (nextLine.equals("list")) {
                 // if input is "list"
                 for (int i = 0; i < listPtr; i++) {
-                    System.out.println((i + 1) + ": " + list[i]);
+                    System.out.println((i + 1) + ": " + list[i].getEntryString());
                 }
             } else {
                 // if input is anything else
                 System.out.println("added: " + nextLine);
-                list[listPtr++] = nextLine;
+                list[listPtr++] = new Task(nextLine);
             }
 
             System.out.println(horiLines);
