@@ -12,7 +12,7 @@ public class Bob {
         while (sc.hasNextLine()) {
             String nextLine = sc.nextLine();
             System.out.println(horiLines);
-            if (nextLine == "bye") {
+            if (nextLine.equals("bye")) {
                 System.out.println("Goodbye.");
                 break;
             }
