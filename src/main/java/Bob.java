@@ -57,28 +57,34 @@ public class Bob {
                 
                 case "todo":
                     list[listPtr++] = new ToDo(arg);    
-                    System.out.println("added: " + arg);
-                    System.out.println(listPtr + " items in list");
+                    printAddition(arg, listPtr);
                     break;
                 
                 case "deadline":
                     String[] deadlineParts = arg.split(" /by ");
                     list[listPtr++] = new Deadline(deadlineParts[0], deadlineParts[1]);
-                    System.out.println("added: " + arg);
-                    System.out.println(listPtr + " items in list");
+                    printAddition(deadlineParts[0], listPtr);
                     break;
                 
                 case "event":
                     String[] eventParts = arg.split(" /from | /to ");
                     list[listPtr++] = new Event(eventParts[0], eventParts[1], eventParts[2]);
-                    System.out.println("added: " + arg);
-                    System.out.println(listPtr + " items in list");
+                    printAddition(eventParts[0], listPtr);
                     break;
                 
                     
             }
             System.out.println(horiLines);
         }
+    }
+
+    private static void printAddition(String addition, int listPtr) {
+        System.out.println("added: " + addition);
+        System.out.println(String.format(
+            "%d %s in list",
+            listPtr,
+            listPtr < 2 ? "item" : "items"
+        ));
     }
 }
 
