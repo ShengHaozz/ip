@@ -1,7 +1,7 @@
 package tasks;
 
 public class Deadline extends Task {
-    String deadline;
+    private String deadline;
 
     public Deadline(String name, String deadline) {
         super(name);
