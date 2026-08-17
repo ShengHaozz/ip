@@ -69,7 +69,7 @@ public class Bob {
                     break;
                 
                 case "event":
-                    String[] eventParts = arg.split(" \from | \to ");
+                    String[] eventParts = arg.split(" /from | /to ");
                     list[listPtr++] = new Event(eventParts[0], eventParts[1], eventParts[2]);
                     System.out.println("added: " + arg);
                     System.out.println(listPtr + " items in list");
