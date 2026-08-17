@@ -1,6 +1,6 @@
 import java.util.Scanner;
 
-import tasks.Task;
+import tasks.*;
 
 public class Bob {
     public static void main(String[] args) {
@@ -54,10 +54,27 @@ public class Bob {
                     
                     System.out.println(task.getEntryString());
                     break;
-
-                default:
-                list[listPtr++] = new Task(arg);    
-                System.out.println("added: " + arg);
+                
+                case "todo":
+                    list[listPtr++] = new ToDo(arg);    
+                    System.out.println("added: " + arg);
+                    System.out.println(listPtr + " items in list");
+                    break;
+                
+                case "deadline":
+                    String[] deadlineParts = arg.split(" /by ");
+                    list[listPtr++] = new Deadline(deadlineParts[0], deadlineParts[1]);
+                    System.out.println("added: " + arg);
+                    System.out.println(listPtr + " items in list");
+                    break;
+                
+                case "event":
+                    String[] eventParts = arg.split(" \from | \to ");
+                    list[listPtr++] = new Event(eventParts[0], eventParts[1], eventParts[2]);
+                    System.out.println("added: " + arg);
+                    System.out.println(listPtr + " items in list");
+                    break;
+                
                     
             }
             System.out.println(horiLines);
