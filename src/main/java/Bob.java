@@ -9,15 +9,27 @@ public class Bob {
         System.out.println(horiLines);
 
         Scanner sc = new Scanner(System.in);
+        String[] list = new String[100];
+        int listPtr = 0;
+
         while (sc.hasNextLine()) {
             String nextLine = sc.nextLine();
             System.out.println(horiLines);
             if (nextLine.equals("bye")) {
+                // if input is "bye"
                 System.out.println("Goodbye.");
                 break;
+            } else if (nextLine.equals("list")) {
+                // if input is "list"
+                for (int i = 0; i < listPtr; i++) {
+                    System.out.println((i + 1) + ": " + list[i]);
+                }
+            } else {
+                // if input is anything else
+                System.out.println("added: " + nextLine);
+                list[listPtr++] = nextLine;
             }
 
-            System.out.println(nextLine);
             System.out.println(horiLines);
         }
     }
