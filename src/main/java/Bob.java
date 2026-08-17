@@ -1,5 +1,7 @@
 import java.util.Scanner;
 
+import tasks.Task;
+
 public class Bob {
     public static void main(String[] args) {
         String horiLines = "_".repeat(30);
