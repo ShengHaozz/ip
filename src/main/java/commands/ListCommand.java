@@ -16,7 +16,7 @@ public class ListCommand extends Command {
                 System.out.println(String.format(
                     "%d: %s",
                     i + 1,
-                    this.taskList.get(i)    
+                    this.taskList.get(i).getEntryString()
                 ));
             }
             return true;
