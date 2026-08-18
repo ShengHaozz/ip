@@ -2,6 +2,7 @@ package commands;
 import java.util.ArrayList;
 
 import tasks.*;
+import exceptions.*;
 
 public abstract class Command {
     private ArrayList<Task> taskList;
@@ -10,5 +11,5 @@ public abstract class Command {
         this.taskList = taskList;
     }
 
-    public abstract void processInput(String input);
+    public abstract void processInput(String input) throws BobException;
 }
