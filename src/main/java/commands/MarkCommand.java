@@ -13,12 +13,11 @@ public class MarkCommand extends Command {
     public boolean processInput(String input) throws BobException {
         String[] parts = input.split(" ", 2);
         String command = parts[0];
-        String arg = parts[1];
         int taskId;
         switch (command) {
             case "mark":
                 try {
-                    taskId = Integer.parseInt(arg);
+                    taskId = Integer.parseInt(parts[1]);
                     this.taskList.get(taskId - 1).mark();
                 } catch (NumberFormatException e) {
                     throw new BobException("Error: Argument must be an integer");
@@ -31,7 +30,7 @@ public class MarkCommand extends Command {
             
             case "unmark":
                 try {
-                    taskId = Integer.parseInt(arg);
+                    taskId = Integer.parseInt(parts[1]);
                     this.taskList.get(taskId - 1).unmark();
                 } catch (NumberFormatException e) {
                     throw new BobException("Error: Argument must be an integer");
