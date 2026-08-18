@@ -32,6 +32,11 @@ public class Bob {
                 for (Command c : commands) {
                     processed = processed || c.processInput(nextLine);
                 }
+
+                if (!processed) {
+                    System.out.println("What's that?");
+                }
+            
             } catch (ExitException e) {
                 System.out.println(e.getMessage());
                 break;
@@ -39,10 +44,7 @@ public class Bob {
                 System.out.println(e.getMessage());
             }
             
-            if (!processed) {
-                System.out.println("What's that?");
-            }
-            
+
             System.out.println(horiLines);
         }
     }
