@@ -11,5 +11,5 @@ public abstract class Command {
         this.taskList = taskList;
     }
 
-    public abstract void processInput(String input) throws BobException;
+    public abstract void processInput(String input) throws BobException, ExitException;
 }
