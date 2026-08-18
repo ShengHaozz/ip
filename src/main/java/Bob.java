@@ -26,15 +26,12 @@ public class Bob {
         while (sc.hasNextLine()) {
             String nextLine = sc.nextLine();
             System.out.println(horiLines);
-            boolean processed;
+            boolean processed = false;
             try 
             {
-                processed = Arrays
-                    .<Command>stream(commands)
-                    .map(
-                        c -> c.processInput(nextLine)
-                    )
-                    .reduce(false, (a, b) -> a || b);
+                for (Command c : commands) {
+                    processed = processed || c.processInput(nextLine);
+                }
             } catch (ExitException e) {
                 System.out.println(e.getMessage());
                 break;
