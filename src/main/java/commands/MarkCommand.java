@@ -10,7 +10,7 @@ public class MarkCommand extends Command {
         super(list);
     }
 
-    public void processInput(String input) throws BobException {
+    public boolean processInput(String input) throws BobException {
         String[] parts = input.split(" ", 2);
         String command = parts[0];
         String arg = parts[1];
@@ -27,7 +27,7 @@ public class MarkCommand extends Command {
                 }
                 System.out.println("Marked as done:");
                 System.out.println(" " + this.taskList.get(taskId - 1));
-                break;
+                return true;
             
             case "unmark":
                 try {
@@ -40,6 +40,8 @@ public class MarkCommand extends Command {
                 }
                 System.out.println("Marked as not done:");
                 System.out.println(" " + this.taskList.get(taskId - 1));
+                return true;
         }
+        return false;
     }
 }

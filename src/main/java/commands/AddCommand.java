@@ -10,7 +10,7 @@ public class AddCommand extends Command {
         super(taskList);
     }
 
-    public void processInput(String input) throws BobException {
+    public boolean processInput(String input) throws BobException {
         String[] parts = input.split(" ", 2);
         String command = parts[0];
         if (command.equals("todo") || command.equals("deadline") || command.equals("event")) {
@@ -42,9 +42,10 @@ public class AddCommand extends Command {
                     this.printAddition(event);
                     break;
             }
-
-
+            return true;
         }
+
+        return false;
     }
 
     private void printAddition(Task t) {

@@ -9,7 +9,7 @@ public class ListCommand extends Command {
         super(taskList);
     }
 
-    public void processInput(String input) {
+    public boolean processInput(String input) {
         if (input.equals("list")) {
             System.out.println("Tasks:");
             for (int i = 0; i < this.taskList.size(); i++) {
@@ -19,6 +19,8 @@ public class ListCommand extends Command {
                     this.taskList.get(i)    
                 ));
             }
+            return true;
         }
+        return false;
     }
 }

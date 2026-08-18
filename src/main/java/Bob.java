@@ -14,7 +14,7 @@ public class Bob {
         new ExitCommand(list),
         new ListCommand(list),
         new AddCommand(list)
-    }
+    };
     public static void main(String[] args) {
         System.out.println(horiLines);
         System.out.println("Hello! I'm Bob.");
@@ -26,18 +26,24 @@ public class Bob {
         while (sc.hasNextLine()) {
             String nextLine = sc.nextLine();
             System.out.println(horiLines);
+            boolean processed;
             try 
             {
-                Arrays
+                processed = Arrays
                     .<Command>stream(commands)
-                    .forEach(
-                        c -> c.processInput(nextLine);
+                    .map(
+                        c -> c.processInput(nextLine)
                     )
+                    .reduce(false, (a, b) -> a || b);
             } catch (ExitException e) {
                 System.out.println(e.getMessage());
                 break;
             } catch (BobException e) {
                 System.out.println(e.getMessage());
+            }
+            
+            if (!processed) {
+                System.out.println("What's that?");
             }
             
             System.out.println(horiLines);

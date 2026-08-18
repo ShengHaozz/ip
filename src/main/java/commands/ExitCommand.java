@@ -10,9 +10,10 @@ public class ExitCommand extends Command {
         super(taskList);
     }
 
-    public void processInput(String input) throws ExitException {
+    public boolean processInput(String input) throws ExitException {
         if (input.equals("bye")) {
             throw new ExitException("Goodbye.");
         }
+        return false;
     }
 }
