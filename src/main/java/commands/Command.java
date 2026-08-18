@@ -1,7 +1,7 @@
 package commands;
 import java.util.ArrayList;
 
-import tasks.*;
+import tasks.Task;
 import exceptions.*;
 
 public abstract class Command {

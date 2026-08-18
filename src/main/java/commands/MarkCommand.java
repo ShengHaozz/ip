@@ -2,7 +2,7 @@ package commands;
 
 import java.util.ArrayList;
 
-import tasks.*;
+import tasks.Task;
 import exceptions.*;
 
 public class MarkCommand extends Command {
