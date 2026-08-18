@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import tasks.*;
 import commands.*;
+import exceptions.*;
 
 public class Bob {
     private static ArrayList<Task> list = new ArrayList<>();
@@ -25,11 +26,20 @@ public class Bob {
         while (sc.hasNextLine()) {
             String nextLine = sc.nextLine();
             System.out.println(horiLines);
-            Arrays
-                .<Command>stream(commands)
-                .forEach(
-                    c -> c.processInput(nextLine);
-                )
+            try 
+            {
+                Arrays
+                    .<Command>stream(commands)
+                    .forEach(
+                        c -> c.processInput(nextLine);
+                    )
+            } catch (ExitException e) {
+                System.out.println(e.getMessage());
+                break;
+            } catch (BobException e) {
+                System.out.println(e.getMessage());
+            }
+            
             System.out.println(horiLines);
         }
     }
