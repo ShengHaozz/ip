@@ -1,7 +1,6 @@
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.lang.NumberFormatException;
 
 import tasks.*;
 import commands.*;
@@ -11,7 +10,6 @@ public class Bob {
     private static String horiLines = "_".repeat(30);
     private static Command[] commands = {
         new MarkCommand(list),
-        new UnmarkCommand(list),
         new ExitCommand(list),
         new ListCommand(list),
         new AddCommand(list)
