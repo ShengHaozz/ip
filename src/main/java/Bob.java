@@ -1,11 +1,11 @@
 import java.util.Scanner;
+import java.util.ArrayList;
 import java.lang.NumberFormatException;
 
 import tasks.*;
 
 public class Bob {
-    private static Task[] list = new Task[100];
-    private static int listPtr = 0;
+    private static ArrayList<Task> list = new ArrayList<>();
     private static String horiLines = "_".repeat(30);
     public static void main(String[] args) {
         System.out.println(horiLines);
@@ -25,8 +25,8 @@ public class Bob {
                 break;
             } else if (nextLine.equals("list")) {
                 // if input is "list"
-                for (int i = 0; i < listPtr; i++) {
-                    System.out.println((i + 1) + ": " + list[i].getEntryString());
+                for (int i = 0; i < list.size(); i++) {
+                    System.out.println((i + 1) + ": " + list.get(i).getEntryString());
                 }
                 System.out.println(horiLines);
                 continue;
@@ -57,10 +57,10 @@ public class Bob {
                     throw new BobException("Error: argument is not a task id");
                 }
                 
-                if (taskId > listPtr) {
+                if (taskId > list.size()) {
                     throw new BobException("Error: Task not found");
                 }
-                Task task = list[taskId - 1];
+                Task task = list.get(taskId - 1);
                 
                 if (command.equals("mark")) {
                     task.mark();
@@ -75,22 +75,22 @@ public class Bob {
             
             case "todo":
                 ToDo todo = new ToDo(arg);
-                list[listPtr++] = todo;    
-                printAddition(todo, listPtr);
+                list.add(todo);
+                printAddition(todo);
                 break;
             
             case "deadline":
                 String[] deadlineParts = arg.split(" /by ");
                 Deadline deadline = new Deadline(deadlineParts[0], deadlineParts[1]);
-                list[listPtr++] = deadline;
-                printAddition(deadline, listPtr);
+                list.add(deadline);
+                printAddition(deadline);
                 break;
             
             case "event":
                 String[] eventParts = arg.split(" /from | /to ");
                 Event event = new Event(eventParts[0], eventParts[1], eventParts[2]);
-                list[listPtr++] = event;
-                printAddition(event, listPtr);
+                list.add(event);
+                printAddition(event);
                 break;
 
             default:
@@ -98,13 +98,13 @@ public class Bob {
         }
     }
 
-    private static void printAddition(Task task, int listPtr) {
+    private static void printAddition(Task task) {
         System.out.println("Added: ");
         System.out.println("  " + task.getEntryString());
         System.out.println(String.format(
             "%d %s in list",
-            listPtr,
-            listPtr < 2 ? "item" : "items"
+            list.size(),
+            list.size() < 2 ? "item" : "items"
         ));
     }
 }
