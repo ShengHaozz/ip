@@ -13,7 +13,8 @@ public class Bob {
         new MarkCommand(list),
         new ExitCommand(list),
         new ListCommand(list),
-        new AddCommand(list)
+        new AddCommand(list),
+        new DeleteCommand(list)
     };
     public static void main(String[] args) {
         System.out.println(horiLines);
