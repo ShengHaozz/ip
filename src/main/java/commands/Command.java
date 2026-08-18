@@ -5,7 +5,7 @@ import tasks.*;
 import exceptions.*;
 
 public abstract class Command {
-    private ArrayList<Task> taskList;
+    protected ArrayList<Task> taskList;
 
     public Command(ArrayList<Task> taskList) {
         this.taskList = taskList;
