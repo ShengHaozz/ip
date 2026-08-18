@@ -1,13 +1,13 @@
 package commands;
+import java.util.ArrayList;
+
 import tasks.*;
 
 public abstract class Command {
-    private Task[] taskArray;
-    private int taskLen;
+    private ArrayList<Task> taskList;
 
-    public Command(Task[] taskArray, int taskLen) {
-        this.taskArray = taskArray;
-        this.taskLen = taskLen;
+    public Command(ArrayList<Task> taskList) {
+        this.taskList = taskList;
     }
 
     public abstract void processInput(String input);
