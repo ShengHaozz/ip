@@ -51,7 +51,7 @@ public class AddCommand extends Command {
                     String[] eventParts = arg.split(" /from ", 2);
                     Event event;
                     try {
-                        String[] dateParts = eventParts[0].split(" /to ", 2);
+                        String[] dateParts = eventParts[1].split(" /to ", 2);
                         event = new Event(eventParts[0], dateParts[0], dateParts[1]);
                     } catch (ArrayIndexOutOfBoundsException e) {
                         throw new BobException(
