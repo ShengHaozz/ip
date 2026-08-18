@@ -30,14 +30,37 @@ public class AddCommand extends Command {
                 
                 case "deadline":
                     String[] deadlineParts = arg.split(" /by ");
-                    Deadline deadline = new Deadline(deadlineParts[0], deadlineParts[1]);
+                    Deadline deadline;
+                    try {
+                        deadline = new Deadline(deadlineParts[0], deadlineParts[1]);
+
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        throw new BobException(
+                            """
+                            Error: No deadline set for deadline task
+                            Usage: deadline ___ \\by ___
+                            """
+                        );
+
+                    }
                     this.taskList.add(deadline); 
                     this.printAddition(deadline);
                     break;
                 
                 case "event":
-                    String[] eventParts = arg.split(" /from | /to ");
-                    Event event = new Event(eventParts[0], eventParts[1], eventParts[2]);
+                    String[] eventParts = arg.split(" /from ", 2);
+                    String[] dateParts = arg.split(" /to ", 2);
+                    Event event;
+                    try {
+                        event = new Event(eventParts[0], dateParts[0], dateParts[1]);
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        throw new BobException(
+                            """
+                            Error: Missing either /from or /to
+                            Usage: event ___ /from ___ /to ___
+                            """
+                        );
+                    }
                     this.taskList.add(event); 
                     this.printAddition(event);
                     break;
