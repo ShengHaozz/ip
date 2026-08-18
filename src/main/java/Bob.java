@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.lang.NumberFormatException;
 
 import tasks.*;
 
@@ -49,7 +50,13 @@ public class Bob {
         switch (command) {
             case "mark":
             case "unmark":
-                int taskId = Integer.parseInt(arg);
+                int taskId;
+                try {
+                    taskId = Integer.parseInt(arg);
+                } catch (NumberFormatException e) {
+                    throw new BobException("Error: argument is not a task id");
+                }
+                
                 if (taskId > listPtr) {
                     throw new BobException("Error: Task not found");
                 }
