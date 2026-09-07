@@ -21,6 +21,14 @@ import bob.util.DatetimeHelper;
  */
 public class Parser {
 
+    private static final String DELIMITER_BY = " /by ";
+    private static final String DELIMITER_FROM = " /from ";
+    private static final String DELIMITER_TO = " /to ";
+    private static final String MESSAGE_INVALID_DATE_FORMAT = """
+            Error: Cannot parse date
+            Date Format: dd/MM/yy HH:mm
+            """;
+
     /**
      * Prevents instantiation of this utility class.
      */
@@ -144,7 +152,7 @@ public class Parser {
             throw new BobException("deadline needs a description");
         }
 
-        String[] parts = args.split(" /by ", 2);
+        String[] parts = args.split(DELIMITER_BY, 2);
         if (parts.length < 2 || parts[0].isBlank() || parts[1].isBlank()) {
             throw new BobException("""
                     Error: No deadline set for deadline task
@@ -169,7 +177,7 @@ public class Parser {
             throw new BobException("event needs a description");
         }
 
-        String[] parts = args.split(" /from ", 2);
+        String[] parts = args.split(DELIMITER_FROM, 2);
         if (parts.length < 2 || parts[0].isBlank()) {
             throw new BobException("""
                     Error: Missing either /from or /to
@@ -177,7 +185,7 @@ public class Parser {
                     """);
         }
 
-        String[] dateParts = parts[1].split(" /to ", 2);
+        String[] dateParts = parts[1].split(DELIMITER_TO, 2);
         if (dateParts.length < 2 || dateParts[0].isBlank() || dateParts[1].isBlank()) {
             throw new BobException("""
                     Error: Missing either /from or /to
@@ -201,10 +209,7 @@ public class Parser {
         try {
             return LocalDateTime.parse(dateTimeStr, DatetimeHelper.INPUT_FORMATTER);
         } catch (DateTimeParseException e) {
-            throw new BobException("""
-                    Error: Cannot parse date
-                    Date Format: dd/MM/yy HH:mm
-                    """);
+            throw new BobException(MESSAGE_INVALID_DATE_FORMAT);
         }
     }
 

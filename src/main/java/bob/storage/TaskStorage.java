@@ -36,6 +36,11 @@ import bob.util.DatetimeHelper;
 public class TaskStorage implements Storage<TaskList> {
 
     private static final Path FILE_PATH = Paths.get("data", "tasks.txt");
+    private static final String STORAGE_DELIMITER_REGEX = " \\| ";
+    private static final String TYPE_TODO = "T";
+    private static final String TYPE_DEADLINE = "D";
+    private static final String TYPE_EVENT = "E";
+    private static final String STATUS_DONE = "1";
 
     private final Path path;
 
@@ -126,26 +131,26 @@ public class TaskStorage implements Storage<TaskList> {
      *                      dates
      */
     private Task parseTask(String line) throws BobException {
-        String[] parts = line.split(" \\| ");
+        String[] parts = line.split(STORAGE_DELIMITER_REGEX);
 
         if (parts.length < 3) {
             throw new BobException("Error: Invalid task export format: " + line);
         }
 
         String type = parts[0];
-        boolean isDone = parts[1].equals("1");
+        boolean isDone = parts[1].equals(STATUS_DONE);
 
         Task task;
         switch (type) {
-            case "T":
+            case TYPE_TODO:
                 task = parseTodoFromStorage(parts);
                 break;
 
-            case "D":
+            case TYPE_DEADLINE:
                 task = parseDeadlineFromStorage(parts, line);
                 break;
 
-            case "E":
+            case TYPE_EVENT:
                 task = parseEventFromStorage(parts, line);
                 break;
 
@@ -176,7 +181,8 @@ public class TaskStorage implements Storage<TaskList> {
      * @param parts the tokens extracted from the storage line
      * @param line  the raw storage line for error reporting
      * @return the parsed {@link Deadline} task
-     * @throws BobException if the token count is invalid or date format cannot be parsed
+     * @throws BobException if the token count is invalid or date format cannot be
+     *                      parsed
      */
     private Task parseDeadlineFromStorage(String[] parts, String line) throws BobException {
         if (parts.length != 4) {
@@ -197,7 +203,8 @@ public class TaskStorage implements Storage<TaskList> {
      * @param parts the tokens extracted from the storage line
      * @param line  the raw storage line for error reporting
      * @return the parsed {@link Event} task
-     * @throws BobException if the token count is invalid or date format cannot be parsed
+     * @throws BobException if the token count is invalid or date format cannot be
+     *                      parsed
      */
     private Task parseEventFromStorage(String[] parts, String line) throws BobException {
         if (parts.length != 5) {
@@ -213,4 +220,3 @@ public class TaskStorage implements Storage<TaskList> {
         }
     }
 }
-

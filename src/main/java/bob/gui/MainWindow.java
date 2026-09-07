@@ -18,6 +18,8 @@ import javafx.util.Duration;
  * Controller for the main GUI view.
  */
 public final class MainWindow extends AnchorPane {
+    private static final double EXIT_DELAY_SECONDS = 0.5;
+
     @FXML
     private ScrollPane scrollPane;
     @FXML
@@ -71,7 +73,7 @@ public final class MainWindow extends AnchorPane {
         userInput.clear();
 
         if (bob.isExit()) {
-            PauseTransition delay = new PauseTransition(Duration.seconds(0.5));
+            PauseTransition delay = new PauseTransition(Duration.seconds(EXIT_DELAY_SECONDS));
             delay.setOnFinished(event -> Platform.exit());
             delay.play();
         }
