@@ -40,7 +40,9 @@ public class Parser {
         }
 
         String[] parts = fullCommand.trim().split(" ", 2);
+        assert parts.length > 0 : "Command parts array should never be empty after splitting";
         String commandWord = parts[0];
+        assert commandWord != null && !commandWord.isEmpty() : "Command word should not be empty";
         String arguments = parts.length > 1 ? parts[1].trim() : "";
 
         switch (commandWord) {
