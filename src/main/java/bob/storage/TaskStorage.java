@@ -134,41 +134,23 @@ public class TaskStorage implements Storage<TaskList> {
 
         String type = parts[0];
         boolean isDone = parts[1].equals("1");
-        String name = parts[2];
 
         Task task;
+        switch (type) {
+            case "T":
+                task = parseTodoFromStorage(parts);
+                break;
 
-        try {
-            switch (type) {
-                case "T":
-                    task = new ToDo(name);
-                    break;
+            case "D":
+                task = parseDeadlineFromStorage(parts, line);
+                break;
 
-                case "D":
-                    if (parts.length != 4) {
-                        throw new BobException("Error: Corrupted deadline format: " + line);
-                    }
+            case "E":
+                task = parseEventFromStorage(parts, line);
+                break;
 
-                    LocalDateTime deadline = LocalDateTime.parse(parts[3], DatetimeHelper.ISO_FORMATTER);
-                    task = new Deadline(name, deadline);
-                    break;
-
-                case "E":
-                    if (parts.length != 5) {
-                        throw new BobException("Error: Corrupted event format: " + line);
-                    }
-
-                    LocalDateTime from = LocalDateTime.parse(parts[3], DatetimeHelper.ISO_FORMATTER);
-                    LocalDateTime to = LocalDateTime.parse(parts[4], DatetimeHelper.ISO_FORMATTER);
-
-                    task = new Event(name, from, to);
-                    break;
-
-                default:
-                    throw new BobException("Error: Unknown task type of " + type);
-            }
-        } catch (DateTimeParseException e) {
-            throw new BobException("Error: Corrupted date-time format: " + line);
+            default:
+                throw new BobException("Error: Unknown task type of " + type);
         }
 
         if (isDone) {
@@ -177,4 +159,58 @@ public class TaskStorage implements Storage<TaskList> {
 
         return task;
     }
-}
+
+    /**
+     * Parses a {@link ToDo} task from storage line tokens.
+     *
+     * @param parts the tokens extracted from the storage line
+     * @return the parsed {@link ToDo} task
+     */
+    private Task parseTodoFromStorage(String[] parts) {
+        return new ToDo(parts[2]);
+    }
+
+    /**
+     * Parses a {@link Deadline} task from storage line tokens.
+     *
+     * @param parts the tokens extracted from the storage line
+     * @param line  the raw storage line for error reporting
+     * @return the parsed {@link Deadline} task
+     * @throws BobException if the token count is invalid or date format cannot be parsed
+     */
+    private Task parseDeadlineFromStorage(String[] parts, String line) throws BobException {
+        if (parts.length != 4) {
+            throw new BobException("Error: Corrupted deadline format: " + line);
+        }
+
+        try {
+            LocalDateTime deadline = LocalDateTime.parse(parts[3], DatetimeHelper.ISO_FORMATTER);
+            return new Deadline(parts[2], deadline);
+        } catch (DateTimeParseException e) {
+            throw new BobException("Error: Corrupted date-time format: " + line);
+        }
+    }
+
+    /**
+     * Parses an {@link Event} task from storage line tokens.
+     *
+     * @param parts the tokens extracted from the storage line
+     * @param line  the raw storage line for error reporting
+     * @return the parsed {@link Event} task
+     * @throws BobException if the token count is invalid or date format cannot be parsed
+     */
+    private Task parseEventFromStorage(String[] parts, String line) throws BobException {
+        if (parts.length != 5) {
+            throw new BobException("Error: Corrupted event format: " + line);
+        }
+
+        try {
+            LocalDateTime from = LocalDateTime.parse(parts[3], DatetimeHelper.ISO_FORMATTER);
+            LocalDateTime to = LocalDateTime.parse(parts[4], DatetimeHelper.ISO_FORMATTER);
+            return new Event(parts[2], from, to);
+        } catch (DateTimeParseException e) {
+            throw new BobException("Error: Corrupted date-time format: " + line);
+        }
+    }
+}
+
