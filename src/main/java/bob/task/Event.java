@@ -33,6 +33,24 @@ public class Event extends Task {
     }
 
     /**
+     * Returns the start date-time for this event.
+     *
+     * @return the event start date-time
+     */
+    public LocalDateTime getFrom() {
+        return this.from;
+    }
+
+    /**
+     * Returns the end date-time for this event.
+     *
+     * @return the event end date-time
+     */
+    public LocalDateTime getTo() {
+        return this.to;
+    }
+
+    /**
      * Returns the string representation of the event task, including its status,
      * description, and formatted start and end date/times.
      *
@@ -60,5 +78,32 @@ public class Event extends Task {
                 this.name,
                 this.from.format(DatetimeHelper.ISO_FORMATTER),
                 this.to.format(DatetimeHelper.ISO_FORMATTER));
+    }
+
+    /**
+     * Creates an updated copy of this {@link Event} task with optional new description, start time, and end time.
+     *
+     * @param newName     the new description, or null if unchanged
+     * @param newDeadline the new deadline date-time (must be null for Event)
+     * @param newFrom     the new start date-time, or null if unchanged
+     * @param newTo       the new end date-time, or null if unchanged
+     * @return a new updated {@link Event} instance with completion status preserved
+     * @throws BobException if deadline flag (/by) is provided or chronology validation fails
+     */
+    @Override
+    public Task update(String newName, LocalDateTime newDeadline,
+            LocalDateTime newFrom, LocalDateTime newTo) throws BobException {
+        if (newDeadline != null) {
+            throw new BobException("Error: Event tasks do not have a deadline (/by)");
+        }
+
+        String targetName = newName != null ? newName : this.name;
+        LocalDateTime targetFrom = newFrom != null ? newFrom : this.from;
+        LocalDateTime targetTo = newTo != null ? newTo : this.to;
+        Event updated = new Event(targetName, targetFrom, targetTo);
+        if (this.isDone) {
+            updated.mark();
+        }
+        return updated;
     }
 }

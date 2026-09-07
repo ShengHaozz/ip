@@ -68,6 +68,18 @@ public class TaskList implements Iterable<Task> {
     }
 
     /**
+     * Replaces the task at the specified index with the given task.
+     *
+     * @param index the index of the task to replace
+     * @param task  the replacement task
+     * @throws IndexOutOfBoundsException if the index is out of range
+     */
+    public void set(int index, Task task) {
+        assert task != null : "Replacement task should not be null";
+        this.tasks.set(index, task);
+    }
+
+    /**
      * Removes and returns the task at the specified index.
      *
      * @param index the index of the task to be removed

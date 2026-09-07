@@ -2,6 +2,8 @@ package bob.parser;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
+import java.util.HashSet;
+import java.util.Set;
 
 import bob.command.AddCommand;
 import bob.command.Command;
@@ -10,6 +12,7 @@ import bob.command.ExitCommand;
 import bob.command.FindCommand;
 import bob.command.ListCommand;
 import bob.command.MarkCommand;
+import bob.command.UpdateCommand;
 import bob.exception.BobException;
 import bob.task.Deadline;
 import bob.task.Event;
@@ -24,6 +27,12 @@ public class Parser {
     private static final String DELIMITER_BY = " /by ";
     private static final String DELIMITER_FROM = " /from ";
     private static final String DELIMITER_TO = " /to ";
+    private static final String FLAG_DESC = "/desc";
+    private static final String FLAG_BY = "/by";
+    private static final String FLAG_FROM = "/from";
+    private static final String FLAG_TO = "/to";
+    private static final Set<String> VALID_UPDATE_FLAGS = Set.of(FLAG_DESC, FLAG_BY, FLAG_FROM, FLAG_TO);
+    private static final String REGEX_FLAG_DELIMITER = "\\s+(?=/)";
     private static final String MESSAGE_INVALID_DATE_FORMAT = """
             Error: Cannot parse date
             Date Format: dd/MM/yy HH:mm
@@ -72,6 +81,9 @@ public class Parser {
             case "delete":
                 return parseDeleteCommand(arguments);
 
+            case "update":
+                return parseUpdateCommand(arguments);
+
             case "todo":
                 return parseTodoCommand(arguments);
 
@@ -96,15 +108,8 @@ public class Parser {
      * @throws BobException if the arguments are empty or not a valid integer
      */
     private static Command parseMarkCommand(String args, boolean isDone) throws BobException {
-        if (args.isEmpty()) {
-            throw new BobException("Error: Argument must be an integer");
-        }
-        try {
-            int taskId = Integer.parseInt(args);
-            return new MarkCommand(taskId, isDone);
-        } catch (NumberFormatException e) {
-            throw new BobException("Error: Argument must be an integer");
-        }
+        int taskId = parseListIndex(args);
+        return new MarkCommand(taskId, isDone);
     }
 
     /**
@@ -115,15 +120,8 @@ public class Parser {
      * @throws BobException if the arguments are empty or not a valid integer
      */
     private static Command parseDeleteCommand(String args) throws BobException {
-        if (args.isEmpty()) {
-            throw new BobException("Error: Argument must be an integer");
-        }
-        try {
-            int taskId = Integer.parseInt(args);
-            return new DeleteCommand(taskId);
-        } catch (NumberFormatException e) {
-            throw new BobException("Error: Argument must be an integer");
-        }
+        int taskId = parseListIndex(args);
+        return new DeleteCommand(taskId);
     }
 
     /**
@@ -201,11 +199,13 @@ public class Parser {
     }
 
     /**
-     * Parses a date-time string in the standard input format into a {@link LocalDateTime}.
+     * Parses a date-time string in the standard input format into a
+     * {@link LocalDateTime}.
      *
      * @param dateTimeStr the date-time string to parse
      * @return the parsed {@link LocalDateTime}
-     * @throws BobException if the date-time string does not match the expected format
+     * @throws BobException if the date-time string does not match the expected
+     *                      format
      */
     private static LocalDateTime parseDateTime(String dateTimeStr) throws BobException {
         try {
@@ -228,4 +228,186 @@ public class Parser {
         }
         return new FindCommand(args);
     }
+
+    /**
+     * Parses the arguments for an update command.
+     *
+     * @param args the raw arguments string containing the 1-based task index and flags
+     * @return an {@link UpdateCommand} configured with the parsed task index and updated field values
+     * @throws BobException if arguments are invalid, index is missing/non-integer, flags are invalid,
+     *                      duplicate flags are found, or date format cannot be parsed
+     */
+    private static Command parseUpdateCommand(String args) throws BobException {
+        String[] parts = splitUpdateArguments(args);
+        int taskId = parseListIndex(parts[0]);
+        ParsedUpdateFields fields = parseUpdateFlags(parts[1]);
+        return new UpdateCommand(taskId, fields.name(), fields.deadline(), fields.from(), fields.to());
+    }
+
+    /**
+     * Splits and validates the raw update argument string into task index and flags segments.
+     *
+     * @param args the raw arguments string
+     * @return a two-element array containing the task index string and flags string
+     * @throws BobException if arguments are empty or no flags are specified
+     */
+    private static String[] splitUpdateArguments(String args) throws BobException {
+        if (args == null || args.isBlank()) {
+            throw new BobException("Error: Argument must be an integer");
+        }
+
+        String[] parts = args.trim().split("\\s+", 2);
+        if (parts.length < 2 || parts[1].isBlank()) {
+            throw new BobException("""
+                    Error: No fields specified to update.
+                    Usage: update <INDEX> [/desc <DESC>] [/by <BY>] [/from <FROM>] [/to <TO>]""");
+        }
+        return parts;
+    }
+
+    /**
+     * Parses and validates the flags section of an update command into structured fields.
+     *
+     * @param flagsString the flags portion of the arguments
+     * @return a {@link ParsedUpdateFields} containing the parsed update values
+     * @throws BobException if flag format, values, or date formats are invalid
+     */
+    private static ParsedUpdateFields parseUpdateFlags(String flagsString) throws BobException {
+        validateFlagsPrefix(flagsString);
+        String[] flagSegments = splitFlagSegments(flagsString);
+        return processFlagSegments(flagSegments);
+    }
+
+    /**
+     * Validates that the flags argument starts with a flag identifier.
+     *
+     * @param flagsString the flags portion of the arguments
+     * @throws BobException if leading preamble text precedes the flags
+     */
+    private static void validateFlagsPrefix(String flagsString) throws BobException {
+        if (!flagsString.trim().startsWith("/")) {
+            throw new BobException("Error: Invalid arguments before flags");
+        }
+    }
+
+    /**
+     * Splits the flags string into individual flag segments.
+     *
+     * @param flagsString the flags portion of the arguments
+     * @return an array of raw flag segment strings
+     */
+    private static String[] splitFlagSegments(String flagsString) {
+        return flagsString.trim().split(REGEX_FLAG_DELIMITER);
+    }
+
+    /**
+     * Processes each flag segment and aggregates the parsed field values.
+     *
+     * @param segments the raw flag segments
+     * @return a {@link ParsedUpdateFields} containing all specified updates
+     * @throws BobException if duplicate, unrecognized, or invalid flag values are found
+     */
+    private static ParsedUpdateFields processFlagSegments(String[] segments) throws BobException {
+        Set<String> seenFlags = new HashSet<>();
+        String newName = null;
+        LocalDateTime newDeadline = null;
+        LocalDateTime newFrom = null;
+        LocalDateTime newTo = null;
+
+        for (String rawSegment : segments) {
+            String segment = rawSegment.trim();
+            if (segment.isEmpty()) {
+                continue;
+            }
+
+            FlagEntry entry = parseFlagEntry(segment, seenFlags);
+            switch (entry.flag()) {
+                case FLAG_DESC:
+                    newName = entry.value();
+                    break;
+                case FLAG_BY:
+                    newDeadline = parseDateTime(entry.value());
+                    break;
+                case FLAG_FROM:
+                    newFrom = parseDateTime(entry.value());
+                    break;
+                case FLAG_TO:
+                    newTo = parseDateTime(entry.value());
+                    break;
+                default:
+                    throw new BobException("Error: Unrecognized flag: " + entry.flag());
+            }
+        }
+
+        if (seenFlags.isEmpty()) {
+            throw new BobException("""
+                    Error: No fields specified to update.
+                    Usage: update <INDEX> [/desc <DESC>] [/by <BY>] [/from <FROM>] [/to <TO>]""");
+        }
+
+        return new ParsedUpdateFields(newName, newDeadline, newFrom, newTo);
+    }
+
+    /**
+     * Parses a single flag segment into a validated {@link FlagEntry}.
+     *
+     * @param segment   the single flag segment string (e.g., "/desc buy milk")
+     * @param seenFlags set of flags already parsed for duplicate detection
+     * @return a validated {@link FlagEntry}
+     * @throws BobException if the flag is unrecognized, duplicated, or has an empty value
+     */
+    private static FlagEntry parseFlagEntry(String segment, Set<String> seenFlags) throws BobException {
+        String[] parts = segment.split("\\s+", 2);
+        String flag = parts[0];
+        String value = parts.length > 1 ? parts[1].trim() : "";
+
+        if (!VALID_UPDATE_FLAGS.contains(flag)) {
+            throw new BobException("Error: Unrecognized flag: " + flag);
+        }
+
+        if (seenFlags.contains(flag)) {
+            throw new BobException("Error: Duplicate flag: " + flag);
+        }
+        seenFlags.add(flag);
+
+        if (value.isEmpty()) {
+            throw new BobException(flag.equals(FLAG_DESC)
+                    ? "Error: Description cannot be empty"
+                    : "Error: Date cannot be empty");
+        }
+
+        return new FlagEntry(flag, value);
+    }
+
+    /**
+     * Parses a 1-based task list index string into a positive integer.
+     *
+     * @param idString the string representation of the index
+     * @return the parsed positive integer
+     * @throws BobException if the string is empty or not a positive integer
+     */
+    private static int parseListIndex(String idString) throws BobException {
+        if (idString == null || idString.isBlank()) {
+            throw new BobException("Error: Argument must be an integer");
+        }
+        try {
+            int id = Integer.parseInt(idString.trim());
+            if (id <= 0) {
+                throw new BobException("Error: Argument must be an integer");
+            }
+            return id;
+        } catch (NumberFormatException e) {
+            throw new BobException("Error: Argument must be an integer");
+        }
+    }
+
+    /**
+     * Data carrier representing an individual flag and its string value.
+     */
+    private record FlagEntry(String flag, String value) {}
+
+    /**
+     * Data carrier representing the parsed field values for an update command.
+     */
+    private record ParsedUpdateFields(String name, LocalDateTime deadline, LocalDateTime from, LocalDateTime to) {}
 }

@@ -89,4 +89,12 @@ public class UiTest {
         ui.setMessage("Simple message");
         assertEquals("Simple message", ui.getLastResponse());
     }
+
+    @Test
+    public void setTaskUpdated_updatesLastResponse() {
+        Task before = new ToDo("old task");
+        Task after = new ToDo("new task");
+        ui.setTaskUpdated(before, after);
+        assertEquals("Task updated from:\n  [T][ ] old task\nto:\n  [T][ ] new task", ui.getLastResponse());
+    }
 }

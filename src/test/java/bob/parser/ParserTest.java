@@ -13,6 +13,7 @@ import bob.command.ExitCommand;
 import bob.command.FindCommand;
 import bob.command.ListCommand;
 import bob.command.MarkCommand;
+import bob.command.UpdateCommand;
 import bob.exception.BobException;
 
 /**
@@ -123,6 +124,77 @@ public class ParserTest {
     public void parse_findEmptyKeyword_throwsBobException() {
         assertThrows(BobException.class, () -> Parser.parse("find"));
         assertThrows(BobException.class, () -> Parser.parse("find   "));
+    }
+
+    @Test
+    public void parse_updateCommand_validDesc_returnsUpdateCommand() throws BobException {
+        Command command = Parser.parse("update 1 /desc new task description");
+        assertInstanceOf(UpdateCommand.class, command);
+    }
+
+    @Test
+    public void parse_updateCommand_validDeadlineBy_returnsUpdateCommand() throws BobException {
+        Command command = Parser.parse("update 2 /by 12/12/26 23:59");
+        assertInstanceOf(UpdateCommand.class, command);
+    }
+
+    @Test
+    public void parse_updateCommand_validEventFromAndTo_returnsUpdateCommand() throws BobException {
+        Command command = Parser.parse("update 3 /from 15/12/26 10:00 /to 15/12/26 12:00");
+        assertInstanceOf(UpdateCommand.class, command);
+    }
+
+    @Test
+    public void parse_updateCommand_multiFieldArbitraryOrder_returnsUpdateCommand() throws BobException {
+        Command command = Parser.parse("update 3 /to 15/12/26 12:00 /desc new event /from 15/12/26 10:00");
+        assertInstanceOf(UpdateCommand.class, command);
+    }
+
+    @Test
+    public void parse_updateCommand_duplicateFlags_throwsBobException() {
+        assertThrows(BobException.class, () -> Parser.parse("update 1 /desc A /desc B"));
+        assertThrows(BobException.class, () -> Parser.parse("update 2 /by 11/11/26 10:00 /by 12/12/26 10:00"));
+    }
+
+    @Test
+    public void parse_updateCommand_unrecognizedFlag_throwsBobException() {
+        assertThrows(BobException.class, () -> Parser.parse("update 1 /tag important"));
+        assertThrows(BobException.class, () -> Parser.parse("update 1 /invalid"));
+    }
+
+    @Test
+    public void parse_updateCommand_preambleText_throwsBobException() {
+        assertThrows(BobException.class, () -> Parser.parse("update 1 preamble text /desc new"));
+    }
+
+    @Test
+    public void parse_updateCommand_noFlagsOrEmpty_throwsBobException() {
+        assertThrows(BobException.class, () -> Parser.parse("update 1"));
+        assertThrows(BobException.class, () -> Parser.parse("update"));
+        assertThrows(BobException.class, () -> Parser.parse("update   "));
+    }
+
+    @Test
+    public void parse_updateCommand_emptyFlagValues_throwsBobException() {
+        assertThrows(BobException.class, () -> Parser.parse("update 1 /desc"));
+        assertThrows(BobException.class, () -> Parser.parse("update 1 /desc "));
+        assertThrows(BobException.class, () -> Parser.parse("update 2 /by "));
+        assertThrows(BobException.class, () -> Parser.parse("update 3 /from "));
+        assertThrows(BobException.class, () -> Parser.parse("update 3 /to "));
+    }
+
+    @Test
+    public void parse_updateCommand_invalidIndex_throwsBobException() {
+        assertThrows(BobException.class, () -> Parser.parse("update abc /desc new name"));
+        assertThrows(BobException.class, () -> Parser.parse("update 0 /desc new name"));
+        assertThrows(BobException.class, () -> Parser.parse("update -1 /desc new name"));
+    }
+
+    @Test
+    public void parse_updateCommand_invalidDateFormat_throwsBobException() {
+        assertThrows(BobException.class, () -> Parser.parse("update 2 /by 2026-12-12"));
+        assertThrows(BobException.class, () -> Parser.parse("update 3 /from not-a-date"));
+        assertThrows(BobException.class, () -> Parser.parse("update 3 /to 12-12-2026 10:00"));
     }
 
     @Test

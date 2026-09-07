@@ -1,5 +1,9 @@
 package bob.task;
 
+import java.time.LocalDateTime;
+
+import bob.exception.BobException;
+
 /**
  * Represents a general task in the task list.
  */
@@ -22,8 +26,26 @@ public abstract class Task {
     }
 
     /**
+     * Returns the description name of the task.
      *
-     * 
+     * @return the description name
+     */
+    public String getName() {
+        return this.name;
+    }
+
+    /**
+     * Checks whether the task is completed.
+     *
+     * @return true if task is done, false otherwise
+     */
+    public boolean isDone() {
+        return this.isDone;
+    }
+
+    /**
+     * Returns the done code for storage serialization.
+     *
      * @return 1 if task is done, 0 otherwise
      */
     protected int getDoneCode() {
@@ -77,4 +99,17 @@ public abstract class Task {
      * @return the exported string representation of the task
      */
     public abstract String export();
+
+    /**
+     * Creates an updated copy of this task with the specified optional new field values.
+     *
+     * @param newName     the new description, or null if unchanged
+     * @param newDeadline the new deadline date-time, or null if unchanged
+     * @param newFrom     the new start date-time, or null if unchanged
+     * @param newTo       the new end date-time, or null if unchanged
+     * @return a new updated {@link Task} instance with completion status preserved
+     * @throws BobException if an incompatible field is provided for this task type or validation fails
+     */
+    public abstract Task update(String newName, LocalDateTime newDeadline, LocalDateTime newFrom, LocalDateTime newTo)
+            throws BobException;
 }
