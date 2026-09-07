@@ -41,6 +41,7 @@ public class TaskStorage implements Storage<TaskList> {
     private static final String TYPE_DEADLINE = "D";
     private static final String TYPE_EVENT = "E";
     private static final String STATUS_DONE = "1";
+    private static final String STATUS_NOT_DONE = "0";
 
     private final Path path;
 
@@ -138,7 +139,15 @@ public class TaskStorage implements Storage<TaskList> {
         }
 
         String type = parts[0];
-        boolean isDone = parts[1].equals(STATUS_DONE);
+        boolean isDone;
+        if (parts[1].equals(STATUS_DONE)) {
+            isDone = true;
+        } else if (parts[1].equals(STATUS_NOT_DONE)) {
+            isDone = false;
+        } else {
+            throw new BobException("Error: Invalid done status: " + line);
+        }
+        ;
 
         Task task;
         switch (type) {
