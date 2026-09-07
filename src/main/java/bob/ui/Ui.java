@@ -135,6 +135,19 @@ public class Ui {
     }
 
     /**
+     * Sets the response message after updating a task, showing before and after details.
+     *
+     * @param before the task state before update
+     * @param after  the task state after update
+     */
+    public void setTaskUpdated(Task before, Task after) {
+        assert before != null : "Before task cannot be null";
+        assert after != null : "After task cannot be null";
+        this.lastResponse = String.format("Task updated from:\n  %s\nto:\n  %s",
+                before.toString(), after.toString());
+    }
+
+    /**
      * Sets a generic response message.
      *
      * @param message the message to set

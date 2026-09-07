@@ -63,7 +63,20 @@ public class TaskListTest {
     }
 
     @Test
-    public void getAndRemove_invalidIndex_throwsIndexOutOfBoundsException() {
+    public void set_validIndex_replacesTask() {
+        TaskList tasks = new TaskList();
+        Task task1 = new ToDo("task 1");
+        Task task2 = new ToDo("task 2");
+        tasks.add(task1);
+
+        tasks.set(0, task2);
+
+        assertEquals(1, tasks.size());
+        assertEquals(task2, tasks.get(0));
+    }
+
+    @Test
+    public void getAndRemoveAndSet_invalidIndex_throwsIndexOutOfBoundsException() {
         TaskList tasks = new TaskList();
         tasks.add(new ToDo("task 1"));
 
@@ -71,6 +84,8 @@ public class TaskListTest {
         assertThrows(IndexOutOfBoundsException.class, () -> tasks.get(-1));
         assertThrows(IndexOutOfBoundsException.class, () -> tasks.remove(1));
         assertThrows(IndexOutOfBoundsException.class, () -> tasks.remove(-1));
+        assertThrows(IndexOutOfBoundsException.class, () -> tasks.set(1, new ToDo("other")));
+        assertThrows(IndexOutOfBoundsException.class, () -> tasks.set(-1, new ToDo("other")));
     }
 
     @Test

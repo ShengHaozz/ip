@@ -2,6 +2,7 @@ package bob.task;
 
 import java.time.LocalDateTime;
 
+import bob.exception.BobException;
 import bob.util.DatetimeHelper;
 
 /**
@@ -20,6 +21,15 @@ public class Deadline extends Task {
         super(name);
         assert deadline != null : "Deadline date-time should not be null";
         this.deadline = deadline;
+    }
+
+    /**
+     * Returns the due date-time for this deadline.
+     *
+     * @return the deadline date-time
+     */
+    public LocalDateTime getDeadline() {
+        return this.deadline;
     }
 
     /**
@@ -44,5 +54,31 @@ public class Deadline extends Task {
         return String.format(
                 "D | %s | %s | %s",
                 this.getDoneCode(), this.name, this.deadline.format(DatetimeHelper.ISO_FORMATTER));
+    }
+
+    /**
+     * Creates an updated copy of this {@link Deadline} task with optional new description and deadline.
+     *
+     * @param newName     the new description, or null if unchanged
+     * @param newDeadline the new deadline date-time, or null if unchanged
+     * @param newFrom     the new start date-time (must be null for Deadline)
+     * @param newTo       the new end date-time (must be null for Deadline)
+     * @return a new updated {@link Deadline} instance with completion status preserved
+     * @throws BobException if event date flags (/from, /to) are provided
+     */
+    @Override
+    public Task update(String newName, LocalDateTime newDeadline,
+            LocalDateTime newFrom, LocalDateTime newTo) throws BobException {
+        if (newFrom != null || newTo != null) {
+            throw new BobException("Error: Deadline tasks do not have event dates (/from, /to)");
+        }
+
+        String targetName = newName != null ? newName : this.name;
+        LocalDateTime targetDeadline = newDeadline != null ? newDeadline : this.deadline;
+        Deadline updated = new Deadline(targetName, targetDeadline);
+        if (this.isDone) {
+            updated.mark();
+        }
+        return updated;
     }
 }

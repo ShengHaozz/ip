@@ -1,8 +1,13 @@
 package bob.task;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.Test;
+
+import bob.exception.BobException;
 
 /**
  * Unit tests for {@link ToDo}.
@@ -31,5 +36,27 @@ public class ToDoTest {
 
         todo.unmark();
         assertEquals("T | 0 | buy milk", todo.export());
+    }
+
+    @Test
+    public void update_validName_updatesNameAndPreservesDoneStatus() throws BobException {
+        ToDo todo = new ToDo("buy milk");
+        todo.mark();
+
+        Task updated = todo.update("buy almond milk", null, null, null);
+        assertEquals("[T][X] buy almond milk", updated.toString());
+
+        Task unchanged = todo.update(null, null, null, null);
+        assertEquals("[T][X] buy milk", unchanged.toString());
+    }
+
+    @Test
+    public void update_incompatibleDateFlags_throwsBobException() {
+        ToDo todo = new ToDo("buy milk");
+        LocalDateTime date = LocalDateTime.of(2026, 12, 12, 12, 0);
+
+        assertThrows(BobException.class, () -> todo.update(null, date, null, null));
+        assertThrows(BobException.class, () -> todo.update(null, null, date, null));
+        assertThrows(BobException.class, () -> todo.update(null, null, null, date));
     }
 }
