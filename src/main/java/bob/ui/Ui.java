@@ -68,6 +68,7 @@ public class Ui {
      * @param tasks the task list to format
      */
     public void setTaskList(TaskList tasks) {
+        assert tasks != null : "TaskList cannot be null when displaying tasks";
         StringBuilder sb = new StringBuilder("Tasks:\n");
         for (int i = 0; i < tasks.size(); i++) {
             sb.append(String.format("%d: %s", i + 1, tasks.get(i).toString()));
@@ -79,13 +80,15 @@ public class Ui {
     }
 
     /**
-     * Sets the response to display the tasks that match a search keyword with their original list
+     * Sets the response to display the tasks that match a search keyword with their
+     * original list
      * indices.
      *
      * @param matchingEntries the list of entries containing 1-based indices and
      *                        matching tasks
      */
     public void setMatchingTasks(List<Map.Entry<Integer, Task>> matchingEntries) {
+        assert matchingEntries != null : "Matching entries list cannot be null";
         StringBuilder sb = new StringBuilder("Here are the matching tasks in your list:\n");
         for (int i = 0; i < matchingEntries.size(); i++) {
             Map.Entry<Integer, Task> entry = matchingEntries.get(i);
@@ -104,6 +107,8 @@ public class Ui {
      * @param totalCount the total number of tasks after addition
      */
     public void setTaskAdded(Task task, int totalCount) {
+        assert task != null : "Added task cannot be null";
+        assert totalCount >= 0 : "Total task count cannot be negative";
         this.lastResponse = String.format("Task added:\n%s\n%d %s in list",
                 task.toString(), totalCount, totalCount < 2 ? "item" : "items");
     }
@@ -115,6 +120,8 @@ public class Ui {
      * @param totalCount the total number of tasks after deletion
      */
     public void setTaskDeleted(Task task, int totalCount) {
+        assert task != null : "Deleted task cannot be null";
+        assert totalCount >= 0 : "Total task count cannot be negative";
         this.lastResponse = String.format("Removed: \n%s\n%d %s in list",
                 task.toString(), totalCount, totalCount < 2 ? "item" : "items");
     }
@@ -126,6 +133,7 @@ public class Ui {
      * @param isDone true if marked as done, false if marked as not done
      */
     public void setTaskMarked(Task task, boolean isDone) {
+        assert task != null : "Task to mark/unmark cannot be null";
         String status = isDone ? "Marked as done:" : "Marked as not done:";
         this.lastResponse = status + "\n " + task.toString();
     }

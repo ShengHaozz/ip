@@ -22,6 +22,7 @@ public class FindCommand extends Command {
      * @param keyword the keyword to search for
      */
     public FindCommand(String keyword) {
+        assert keyword != null && !keyword.isBlank() : "Search keyword should not be null or blank";
         this.keyword = keyword;
     }
 
@@ -36,6 +37,7 @@ public class FindCommand extends Command {
      */
     @Override
     public void execute(TaskList tasks, Ui ui, Storage<TaskList> storage) throws BobException {
+        assertExecutionDependencies(tasks, ui, storage);
         List<Map.Entry<Integer, Task>> matchingEntries = tasks.find(keyword);
         ui.setMatchingTasks(matchingEntries);
     }

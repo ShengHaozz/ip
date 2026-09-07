@@ -50,6 +50,7 @@ public final class MainWindow extends AnchorPane {
      * @param b the Bob instance to interact with
      */
     public void setBob(Bob b) {
+        assert b != null : "Bob instance cannot be null";
         bob = b;
         dialogContainer.getChildren().add(
                 DialogBox.getBobDialog(bob.getGreeting(), bobImage));
@@ -61,6 +62,7 @@ public final class MainWindow extends AnchorPane {
      */
     @FXML
     private void handleUserInput() {
+        assert bob != null : "Bob instance must be initialized before handling user input";
         String input = userInput.getText();
         if (input.trim().isEmpty()) {
             return;

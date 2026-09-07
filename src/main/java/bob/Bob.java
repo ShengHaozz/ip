@@ -30,6 +30,9 @@ public class Bob {
             this.ui.setError(e.getMessage());
             this.tasks = new TaskList();
         }
+        assert this.ui != null : "Ui should be initialized";
+        assert this.storage != null : "TaskStorage should be initialized";
+        assert this.tasks != null : "TaskList should be initialized";
     }
 
     /**
@@ -56,6 +59,10 @@ public class Bob {
      *         handling
      */
     public String getResponse(String input) {
+        assert this.tasks != null : "TaskList should not be null when getting response";
+        assert this.ui != null : "Ui should not be null when getting response";
+        assert this.storage != null : "TaskStorage should not be null when getting response";
+
         System.out.println(input);
 
         ui.showDividerLine();

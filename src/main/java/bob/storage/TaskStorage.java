@@ -59,6 +59,7 @@ public class TaskStorage implements Storage<TaskList> {
      * @param path the path to the storage file
      */
     public TaskStorage(Path path) {
+        assert path != null : "Storage file path cannot be null";
         this.path = path;
     }
 
@@ -104,6 +105,7 @@ public class TaskStorage implements Storage<TaskList> {
      */
     @Override
     public void save(TaskList tasks) throws BobException {
+        assert tasks != null : "TaskList to save cannot be null";
         try {
             // Create ./data/ if it does not exist.
             if (path.getParent() != null) {
@@ -132,6 +134,7 @@ public class TaskStorage implements Storage<TaskList> {
      *                      dates
      */
     private Task parseTask(String line) throws BobException {
+        assert line != null && !line.isBlank() : "Line to parse should not be null or blank";
         String[] parts = line.split(STORAGE_DELIMITER_REGEX);
 
         if (parts.length < 3) {

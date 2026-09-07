@@ -33,6 +33,7 @@ public class DeleteCommand extends Command {
      */
     @Override
     public void execute(TaskList tasks, Ui ui, Storage<TaskList> storage) throws BobException {
+        assertExecutionDependencies(tasks, ui, storage);
         try {
             Task task = tasks.remove(taskId - 1);
             storage.save(tasks);
