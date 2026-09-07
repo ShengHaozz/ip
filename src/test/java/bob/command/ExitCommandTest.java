@@ -1,6 +1,7 @@
 package bob.command;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -17,8 +18,9 @@ public class ExitCommandTest extends CommandTestBase {
     }
 
     @Test
-    public void execute_showsGoodbyeWithoutError() {
+    public void execute_setsGoodbyeWithoutError() {
         ExitCommand command = new ExitCommand();
         assertDoesNotThrow(() -> command.execute(tasks, ui, storage));
+        assertEquals("Goodbye.", ui.getLastResponse());
     }
 }

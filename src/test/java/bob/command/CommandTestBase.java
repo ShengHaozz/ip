@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.io.TempDir;
 
+import bob.storage.Storage;
 import bob.storage.TaskStorage;
 import bob.task.TaskList;
 import bob.ui.Ui;
@@ -20,7 +21,7 @@ public abstract class CommandTestBase {
 
     protected TaskList tasks;
     protected Ui ui;
-    protected TaskStorage storage;
+    protected Storage<TaskList> storage;
 
     @BeforeEach
     public void setUp() {

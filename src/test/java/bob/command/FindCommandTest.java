@@ -3,9 +3,6 @@ package bob.command;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-
 import org.junit.jupiter.api.Test;
 
 import bob.exception.BobException;
@@ -23,17 +20,10 @@ public class FindCommandTest extends CommandTestBase {
         tasks.add(new ToDo("buy milk")); // index 3
         tasks.add(new ToDo("read another book")); // index 4
 
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        PrintStream originalOut = System.out;
-        try {
-            System.setOut(new PrintStream(outContent));
-            FindCommand command = new FindCommand("book");
-            command.execute(tasks, ui, storage);
-        } finally {
-            System.setOut(originalOut);
-        }
+        FindCommand command = new FindCommand("book");
+        command.execute(tasks, ui, storage);
 
-        String output = outContent.toString();
+        String output = ui.getLastResponse();
         assertTrue(output.contains("Here are the matching tasks in your list:"));
         assertTrue(output.contains("1.[T][ ] read book"));
         assertTrue(output.contains("2.[T][ ] return book"));

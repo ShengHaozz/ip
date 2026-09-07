@@ -108,6 +108,15 @@ public class TaskStorageTest {
     }
 
     @Test
+    public void load_corruptedDeadlineFieldCount_throwsBobException() throws IOException {
+        Path testFile = tempDir.resolve("corrupted_deadline_count.txt");
+        Files.write(testFile, List.of("D | 0 | submit paper"));
+
+        TaskStorage storage = new TaskStorage(testFile);
+        assertThrows(BobException.class, () -> storage.load());
+    }
+
+    @Test
     public void load_corruptedDeadlineDateFormat_throwsBobException() throws IOException {
         Path testFile = tempDir.resolve("corrupted_deadline.txt");
         Files.write(testFile, List.of("D | 0 | submit paper | invalid-date"));
@@ -120,6 +129,15 @@ public class TaskStorageTest {
     public void load_corruptedEventFieldCount_throwsBobException() throws IOException {
         Path testFile = tempDir.resolve("corrupted_event.txt");
         Files.write(testFile, List.of("E | 0 | workshop | 2026-09-01T09:00"));
+
+        TaskStorage storage = new TaskStorage(testFile);
+        assertThrows(BobException.class, () -> storage.load());
+    }
+
+    @Test
+    public void load_corruptedEventDateFormat_throwsBobException() throws IOException {
+        Path testFile = tempDir.resolve("corrupted_event_date.txt");
+        Files.write(testFile, List.of("E | 0 | workshop | invalid-from | invalid-to"));
 
         TaskStorage storage = new TaskStorage(testFile);
         assertThrows(BobException.class, () -> storage.load());

@@ -1,10 +1,13 @@
 package bob.task;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.Test;
+
+import bob.exception.BobException;
 
 /**
  * Unit tests for {@link Event}.
@@ -12,7 +15,7 @@ import org.junit.jupiter.api.Test;
 public class EventTest {
 
     @Test
-    public void toString_unmarkedAndMarked_formattedCorrectly() {
+    public void toString_unmarkedAndMarked_formattedCorrectly() throws BobException {
         LocalDateTime from = LocalDateTime.of(2026, 11, 11, 14, 0);
         LocalDateTime to = LocalDateTime.of(2026, 11, 11, 16, 0);
         Event event = new Event("project meeting", from, to);
@@ -28,7 +31,7 @@ public class EventTest {
     }
 
     @Test
-    public void export_unmarkedAndMarked_formattedCorrectly() {
+    public void export_unmarkedAndMarked_formattedCorrectly() throws BobException {
         LocalDateTime from = LocalDateTime.of(2026, 11, 11, 14, 0);
         LocalDateTime to = LocalDateTime.of(2026, 11, 11, 16, 0);
         Event event = new Event("project meeting", from, to);
@@ -37,5 +40,12 @@ public class EventTest {
 
         event.mark();
         assertEquals("E | 1 | project meeting | 2026-11-11T14:00:00 | 2026-11-11T16:00:00", event.export());
+    }
+
+    @Test
+    public void constructor_fromAfterTo_throwsBobException() {
+        LocalDateTime from = LocalDateTime.of(2026, 11, 11, 16, 0);
+        LocalDateTime to = LocalDateTime.of(2026, 11, 11, 14, 0);
+        assertThrows(BobException.class, () -> new Event("project meeting", from, to));
     }
 }

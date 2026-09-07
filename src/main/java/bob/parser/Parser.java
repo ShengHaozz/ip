@@ -21,6 +21,14 @@ import bob.util.DatetimeHelper;
  */
 public class Parser {
 
+    private static final String DELIMITER_BY = " /by ";
+    private static final String DELIMITER_FROM = " /from ";
+    private static final String DELIMITER_TO = " /to ";
+    private static final String MESSAGE_INVALID_DATE_FORMAT = """
+            Error: Cannot parse date
+            Date Format: dd/MM/yy HH:mm
+            """;
+
     /**
      * Prevents instantiation of this utility class.
      */
@@ -146,7 +154,7 @@ public class Parser {
             throw new BobException("deadline needs a description");
         }
 
-        String[] parts = args.split(" /by ", 2);
+        String[] parts = args.split(DELIMITER_BY, 2);
         if (parts.length < 2 || parts[0].isBlank() || parts[1].isBlank()) {
             throw new BobException("""
                     Error: No deadline set for deadline task
@@ -154,15 +162,8 @@ public class Parser {
                     """);
         }
 
-        try {
-            LocalDateTime by = LocalDateTime.parse(parts[1], DatetimeHelper.INPUT_FORMATTER);
-            return new AddCommand(new Deadline(parts[0], by));
-        } catch (DateTimeParseException e) {
-            throw new BobException("""
-                    Error: Cannot parse date
-                    Date Format: dd/MM/yy HH:mm
-                    """);
-        }
+        LocalDateTime by = parseDateTime(parts[1]);
+        return new AddCommand(new Deadline(parts[0], by));
     }
 
     /**
@@ -178,7 +179,7 @@ public class Parser {
             throw new BobException("event needs a description");
         }
 
-        String[] parts = args.split(" /from ", 2);
+        String[] parts = args.split(DELIMITER_FROM, 2);
         if (parts.length < 2 || parts[0].isBlank()) {
             throw new BobException("""
                     Error: Missing either /from or /to
@@ -186,7 +187,7 @@ public class Parser {
                     """);
         }
 
-        String[] dateParts = parts[1].split(" /to ", 2);
+        String[] dateParts = parts[1].split(DELIMITER_TO, 2);
         if (dateParts.length < 2 || dateParts[0].isBlank() || dateParts[1].isBlank()) {
             throw new BobException("""
                     Error: Missing either /from or /to
@@ -194,15 +195,23 @@ public class Parser {
                     """);
         }
 
+        LocalDateTime from = parseDateTime(dateParts[0]);
+        LocalDateTime to = parseDateTime(dateParts[1]);
+        return new AddCommand(new Event(parts[0], from, to));
+    }
+
+    /**
+     * Parses a date-time string in the standard input format into a {@link LocalDateTime}.
+     *
+     * @param dateTimeStr the date-time string to parse
+     * @return the parsed {@link LocalDateTime}
+     * @throws BobException if the date-time string does not match the expected format
+     */
+    private static LocalDateTime parseDateTime(String dateTimeStr) throws BobException {
         try {
-            LocalDateTime from = LocalDateTime.parse(dateParts[0], DatetimeHelper.INPUT_FORMATTER);
-            LocalDateTime to = LocalDateTime.parse(dateParts[1], DatetimeHelper.INPUT_FORMATTER);
-            return new AddCommand(new Event(parts[0], from, to));
+            return LocalDateTime.parse(dateTimeStr, DatetimeHelper.INPUT_FORMATTER);
         } catch (DateTimeParseException e) {
-            throw new BobException("""
-                    Error: Cannot parse date
-                    Date Format: dd/MM/yy HH:mm
-                    """);
+            throw new BobException(MESSAGE_INVALID_DATE_FORMAT);
         }
     }
 
