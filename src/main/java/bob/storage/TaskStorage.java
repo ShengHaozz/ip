@@ -147,7 +147,6 @@ public class TaskStorage implements Storage<TaskList> {
         } else {
             throw new BobException("Error: Invalid done status: " + line);
         }
-        ;
 
         Task task;
         switch (type) {
