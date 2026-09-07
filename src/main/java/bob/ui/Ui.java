@@ -3,6 +3,8 @@ package bob.ui;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import bob.task.Task;
 import bob.task.TaskList;
@@ -74,14 +76,11 @@ public class Ui {
      * @param tasks the task list to display
      */
     public void showTaskList(TaskList tasks) {
-        StringBuilder sb = new StringBuilder("Tasks:\n");
-        for (int i = 0; i < tasks.size(); i++) {
-            sb.append(String.format("%d: %s", i + 1, tasks.get(i).toString()));
-            if (i < tasks.size() - 1) {
-                sb.append("\n");
-            }
-        }
-        this.lastResponse = sb.toString();
+        String formattedTasks = IntStream.range(0, tasks.size())
+                .<String>mapToObj(i -> String.format("%d: %s", i + 1, tasks.get(i).toString()))
+                .collect(Collectors.joining("\n"));
+
+        this.lastResponse = formattedTasks.isEmpty() ? "No Tasks" : "Tasks:\n" + formattedTasks;
         System.out.println(this.lastResponse);
     }
 
@@ -93,15 +92,12 @@ public class Ui {
      *                        matching tasks
      */
     public void showMatchingTasks(List<Map.Entry<Integer, Task>> matchingEntries) {
-        StringBuilder sb = new StringBuilder("Here are the matching tasks in your list:\n");
-        for (int i = 0; i < matchingEntries.size(); i++) {
-            Map.Entry<Integer, Task> entry = matchingEntries.get(i);
-            sb.append(String.format("%d.%s", entry.getKey(), entry.getValue().toString()));
-            if (i < matchingEntries.size() - 1) {
-                sb.append("\n");
-            }
-        }
-        this.lastResponse = sb.toString();
+        String formattedTasks = matchingEntries.stream()
+                .<String>map(entry -> String.format("%d.%s", entry.getKey(), entry.getValue().toString()))
+                .collect(Collectors.joining("\n"));
+
+        this.lastResponse = formattedTasks.isEmpty() ? "No matching tasks"
+                : "Here are the matching tasks in your list:\n" + formattedTasks;
         System.out.println(this.lastResponse);
     }
 
