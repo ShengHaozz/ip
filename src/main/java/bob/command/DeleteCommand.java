@@ -36,7 +36,7 @@ public class DeleteCommand extends Command {
         try {
             Task task = tasks.remove(taskId - 1);
             storage.save(tasks);
-            ui.showTaskDeleted(task, tasks.size());
+            ui.setTaskDeleted(task, tasks.size());
         } catch (IndexOutOfBoundsException e) {
             throw new BobException("Error: taskId out of bounds");
         }

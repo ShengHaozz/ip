@@ -46,7 +46,7 @@ public class MarkCommand extends Command {
                 task.unmark();
             }
             storage.save(tasks);
-            ui.showTaskMarked(task, isDone);
+            ui.setTaskMarked(task, isDone);
         } catch (IndexOutOfBoundsException e) {
             throw new BobException("Error: taskId out of bounds");
         }

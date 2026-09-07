@@ -26,6 +26,6 @@ public class ListCommand extends Command {
      */
     @Override
     public void execute(TaskList tasks, Ui ui, TaskStorage storage) throws BobException {
-        ui.showTaskList(tasks);
+        ui.setTaskList(tasks);
     }
 }

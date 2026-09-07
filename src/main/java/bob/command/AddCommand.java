@@ -35,6 +35,6 @@ public class AddCommand extends Command {
     public void execute(TaskList tasks, Ui ui, TaskStorage storage) throws BobException {
         tasks.add(this.task);
         storage.save(tasks);
-        ui.showTaskAdded(this.task, tasks.size());
+        ui.setTaskAdded(this.task, tasks.size());
     }
 }

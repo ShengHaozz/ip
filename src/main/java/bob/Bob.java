@@ -26,7 +26,7 @@ public class Bob {
         try {
             this.tasks = this.storage.load();
         } catch (BobException e) {
-            this.ui.showError(e.getMessage());
+            this.ui.setError(e.getMessage());
             this.tasks = new TaskList();
         }
     }
@@ -35,7 +35,10 @@ public class Bob {
      * Runs the main command loop of the application in CLI mode.
      */
     public void run() {
-        ui.showWelcome();
+        ui.setWelcome();
+        ui.showDividerLine();
+        System.out.println(ui.getLastResponse());
+        ui.showDividerLine();
         boolean isRunning = true;
 
         while (isRunning && ui.hasNextCommand()) {
@@ -47,8 +50,9 @@ public class Bob {
                 this.isExit = c.isExit();
                 isRunning = !this.isExit;
             } catch (BobException e) {
-                ui.showError(e.getMessage());
+                ui.setError(e.getMessage());
             }
+            System.out.println(ui.getLastResponse());
             ui.showDividerLine();
         }
     }
@@ -66,7 +70,7 @@ public class Bob {
             this.isExit = c.isExit();
             return ui.getLastResponse();
         } catch (BobException e) {
-            ui.showError(e.getMessage());
+            ui.setError(e.getMessage());
             return ui.getLastResponse();
         }
     }
@@ -86,7 +90,7 @@ public class Bob {
      * @return the initial greeting string
      */
     public String getGreeting() {
-        ui.showWelcome();
+        ui.setWelcome();
         return ui.getLastResponse();
     }
 

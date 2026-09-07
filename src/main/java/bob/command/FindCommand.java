@@ -37,6 +37,6 @@ public class FindCommand extends Command {
     @Override
     public void execute(TaskList tasks, Ui ui, TaskStorage storage) throws BobException {
         List<Map.Entry<Integer, Task>> matchingEntries = tasks.find(keyword);
-        ui.showMatchingTasks(matchingEntries);
+        ui.setMatchingTasks(matchingEntries);
     }
 }
