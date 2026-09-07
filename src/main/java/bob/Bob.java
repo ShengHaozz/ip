@@ -3,6 +3,7 @@ package bob;
 import bob.command.Command;
 import bob.exception.BobException;
 import bob.parser.Parser;
+import bob.storage.Storage;
 import bob.storage.TaskStorage;
 import bob.task.TaskList;
 import bob.ui.Ui;
@@ -11,7 +12,7 @@ import bob.ui.Ui;
  * Main entry point for the Bob task management application.
  */
 public class Bob {
-    private final TaskStorage storage;
+    private final Storage<TaskList> storage;
     private TaskList tasks;
     private final Ui ui;
 

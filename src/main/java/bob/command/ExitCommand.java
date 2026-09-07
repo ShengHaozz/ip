@@ -1,7 +1,7 @@
 package bob.command;
 
 import bob.exception.BobException;
-import bob.storage.TaskStorage;
+import bob.storage.Storage;
 import bob.task.TaskList;
 import bob.ui.Ui;
 
@@ -25,7 +25,7 @@ public class ExitCommand extends Command {
      * @throws BobException if an error occurs during execution
      */
     @Override
-    public void execute(TaskList tasks, Ui ui, TaskStorage storage) throws BobException {
+    public void execute(TaskList tasks, Ui ui, Storage<TaskList> storage) throws BobException {
         ui.setGoodbye();
     }
 
