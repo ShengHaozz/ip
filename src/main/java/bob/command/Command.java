@@ -29,11 +29,11 @@ public abstract class Command {
     /**
      * Asserts that none of the core execution dependencies are null.
      *
-     * @param tasks the list of tasks
-     * @param ui the user interface handler
+     * @param tasks   the list of tasks
+     * @param ui      the user interface handler
      * @param storage the storage handler
      */
-    protected void assertExecutionDependencies(TaskList tasks, Ui ui, TaskStorage storage) {
+    protected void assertExecutionDependencies(TaskList tasks, Ui ui, Storage<TaskList> storage) {
         assert tasks != null : "TaskList should not be null during command execution";
         assert ui != null : "Ui should not be null during command execution";
         assert storage != null : "TaskStorage should not be null during command execution";
