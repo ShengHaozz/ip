@@ -35,44 +35,39 @@ public class Bob {
      * Runs the main command loop of the application in CLI mode.
      */
     public void run() {
-        ui.setWelcome();
-        ui.showDividerLine();
-        System.out.println(ui.getLastResponse());
-        ui.showDividerLine();
-        boolean isRunning = true;
+        getGreeting();
 
-        while (isRunning && ui.hasNextCommand()) {
+        while (ui.hasNextCommand()) {
             String fullCommand = ui.readCommand();
-            ui.showDividerLine();
-            try {
-                Command c = Parser.parse(fullCommand);
-                c.execute(tasks, ui, storage);
-                this.isExit = c.isExit();
-                isRunning = !this.isExit;
-            } catch (BobException e) {
-                ui.setError(e.getMessage());
+            getResponse(fullCommand);
+            if (this.isExit) {
+                break;
             }
-            System.out.println(ui.getLastResponse());
-            ui.showDividerLine();
         }
     }
 
     /**
-     * Generates a response for the user's chat message input in GUI mode.
+     * Generates a response for the user's chat message input in GUI mode and prints
+     * to stdout.
      *
      * @param input the raw input command string entered by the user
-     * @return the response string generated after command execution or error handling
+     * @return the response string generated after command execution or error
+     *         handling
      */
     public String getResponse(String input) {
+        System.out.println(input);
+
+        ui.showDividerLine();
         try {
             Command c = Parser.parse(input);
             c.execute(tasks, ui, storage);
             this.isExit = c.isExit();
-            return ui.getLastResponse();
         } catch (BobException e) {
             ui.setError(e.getMessage());
-            return ui.getLastResponse();
         }
+        System.out.println(ui.getLastResponse());
+        ui.showDividerLine();
+        return ui.getLastResponse();
     }
 
     /**
@@ -90,7 +85,10 @@ public class Bob {
      * @return the initial greeting string
      */
     public String getGreeting() {
+        ui.showDividerLine();
         ui.setWelcome();
+        System.out.println(ui.getLastResponse());
+        ui.showDividerLine();
         return ui.getLastResponse();
     }
 
