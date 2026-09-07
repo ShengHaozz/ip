@@ -152,15 +152,8 @@ public class Parser {
                     """);
         }
 
-        try {
-            LocalDateTime by = LocalDateTime.parse(parts[1], DatetimeHelper.INPUT_FORMATTER);
-            return new AddCommand(new Deadline(parts[0], by));
-        } catch (DateTimeParseException e) {
-            throw new BobException("""
-                    Error: Cannot parse date
-                    Date Format: dd/MM/yy HH:mm
-                    """);
-        }
+        LocalDateTime by = parseDateTime(parts[1]);
+        return new AddCommand(new Deadline(parts[0], by));
     }
 
     /**
@@ -192,10 +185,21 @@ public class Parser {
                     """);
         }
 
+        LocalDateTime from = parseDateTime(dateParts[0]);
+        LocalDateTime to = parseDateTime(dateParts[1]);
+        return new AddCommand(new Event(parts[0], from, to));
+    }
+
+    /**
+     * Parses a date-time string in the standard input format into a {@link LocalDateTime}.
+     *
+     * @param dateTimeStr the date-time string to parse
+     * @return the parsed {@link LocalDateTime}
+     * @throws BobException if the date-time string does not match the expected format
+     */
+    private static LocalDateTime parseDateTime(String dateTimeStr) throws BobException {
         try {
-            LocalDateTime from = LocalDateTime.parse(dateParts[0], DatetimeHelper.INPUT_FORMATTER);
-            LocalDateTime to = LocalDateTime.parse(dateParts[1], DatetimeHelper.INPUT_FORMATTER);
-            return new AddCommand(new Event(parts[0], from, to));
+            return LocalDateTime.parse(dateTimeStr, DatetimeHelper.INPUT_FORMATTER);
         } catch (DateTimeParseException e) {
             throw new BobException("""
                     Error: Cannot parse date
