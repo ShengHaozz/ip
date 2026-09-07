@@ -29,6 +29,9 @@ public class Bob {
             this.ui.showError(e.getMessage());
             this.tasks = new TaskList();
         }
+        assert this.ui != null : "Ui should be initialized";
+        assert this.storage != null : "TaskStorage should be initialized";
+        assert this.tasks != null : "TaskList should be initialized";
     }
 
     /**
@@ -60,6 +63,9 @@ public class Bob {
      * @return the response string generated after command execution or error handling
      */
     public String getResponse(String input) {
+        assert this.tasks != null : "TaskList should not be null when getting response";
+        assert this.ui != null : "Ui should not be null when getting response";
+        assert this.storage != null : "TaskStorage should not be null when getting response";
         try {
             Command c = Parser.parse(input);
             c.execute(tasks, ui, storage);

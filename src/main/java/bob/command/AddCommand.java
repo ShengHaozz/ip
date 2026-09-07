@@ -18,6 +18,7 @@ public class AddCommand extends Command {
      * @param task the task to be added
      */
     public AddCommand(Task task) {
+        assert task != null : "Task to add should not be null";
         this.task = task;
     }
 
@@ -33,6 +34,7 @@ public class AddCommand extends Command {
      */
     @Override
     public void execute(TaskList tasks, Ui ui, TaskStorage storage) throws BobException {
+        assertExecutionDependencies(tasks, ui, storage);
         tasks.add(this.task);
         storage.save(tasks);
         ui.showTaskAdded(this.task, tasks.size());
