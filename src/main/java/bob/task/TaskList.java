@@ -26,6 +26,7 @@ public class TaskList implements Iterable<Task> {
      */
     public TaskList(List<Task> tasks) {
         this.tasks = tasks != null ? new ArrayList<>(tasks) : new ArrayList<>();
+        assert this.tasks != null : "Backing task list should not be null";
     }
 
     /**
@@ -49,7 +50,10 @@ public class TaskList implements Iterable<Task> {
      * @param task the task to be added
      */
     public void add(Task task) {
+        assert task != null : "Task to add should not be null";
+        int initialSize = this.tasks.size();
         this.tasks.add(task);
+        assert this.tasks.size() == initialSize + 1 : "Task list size should increment by 1 after add";
     }
 
     /**

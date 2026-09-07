@@ -38,6 +38,7 @@ public class MarkCommand extends Command {
      */
     @Override
     public void execute(TaskList tasks, Ui ui, TaskStorage storage) throws BobException {
+        assertExecutionDependencies(tasks, ui, storage);
         try {
             Task task = tasks.get(taskId - 1);
             if (isDone) {

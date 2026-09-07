@@ -76,6 +76,7 @@ public class Ui {
      * @param tasks the task list to display
      */
     public void showTaskList(TaskList tasks) {
+        assert tasks != null : "TaskList cannot be null when displaying tasks";
         String formattedTasks = IntStream.range(0, tasks.size())
                 .<String>mapToObj(i -> String.format("%d: %s", i + 1, tasks.get(i).toString()))
                 .collect(Collectors.joining("\n"));
@@ -92,6 +93,7 @@ public class Ui {
      *                        matching tasks
      */
     public void showMatchingTasks(List<Map.Entry<Integer, Task>> matchingEntries) {
+        assert matchingEntries != null : "Matching entries list cannot be null";
         String formattedTasks = matchingEntries.stream()
                 .<String>map(entry -> String.format("%d.%s", entry.getKey(), entry.getValue().toString()))
                 .collect(Collectors.joining("\n"));
@@ -108,6 +110,8 @@ public class Ui {
      * @param totalCount the total number of tasks after addition
      */
     public void showTaskAdded(Task task, int totalCount) {
+        assert task != null : "Added task cannot be null";
+        assert totalCount >= 0 : "Total task count cannot be negative";
         String message = String.format("Task added:\n%s\n%d %s in list",
                 task.toString(), totalCount, totalCount < 2 ? "item" : "items");
         this.lastResponse = message;
@@ -121,6 +125,8 @@ public class Ui {
      * @param totalCount the total number of tasks after deletion
      */
     public void showTaskDeleted(Task task, int totalCount) {
+        assert task != null : "Deleted task cannot be null";
+        assert totalCount >= 0 : "Total task count cannot be negative";
         String message = String.format("Removed: \n%s\n%d %s in list",
                 task.toString(), totalCount, totalCount < 2 ? "item" : "items");
         this.lastResponse = message;
@@ -134,6 +140,7 @@ public class Ui {
      * @param isDone true if marked as done, false if marked as not done
      */
     public void showTaskMarked(Task task, boolean isDone) {
+        assert task != null : "Task to mark/unmark cannot be null";
         String status = isDone ? "Marked as done:" : "Marked as not done:";
         String message = status + "\n " + task.toString();
         this.lastResponse = message;

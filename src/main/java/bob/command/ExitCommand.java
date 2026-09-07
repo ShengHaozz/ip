@@ -26,6 +26,7 @@ public class ExitCommand extends Command {
      */
     @Override
     public void execute(TaskList tasks, Ui ui, TaskStorage storage) throws BobException {
+        assertExecutionDependencies(tasks, ui, storage);
         ui.showGoodbye();
     }
 
