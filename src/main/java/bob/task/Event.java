@@ -54,7 +54,7 @@ public class Event extends Task {
     public String export() {
         return String.format(
                 "E | %s | %s | %s | %s",
-                this.isDone ? 1 : 0,
+                this.getDoneCode(),
                 this.name,
                 this.from.format(DatetimeHelper.ISO_FORMATTER),
                 this.to.format(DatetimeHelper.ISO_FORMATTER));

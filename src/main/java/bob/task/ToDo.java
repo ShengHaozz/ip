@@ -34,7 +34,7 @@ public class ToDo extends Task {
     public String export() {
         return String.format(
                 "T | %s | %s",
-                this.isDone ? 1 : 0,
+                this.getDoneCode(),
                 this.name);
     }
 }

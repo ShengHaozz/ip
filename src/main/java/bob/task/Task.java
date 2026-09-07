@@ -21,6 +21,15 @@ public abstract class Task {
     }
 
     /**
+     *
+     * 
+     * @return 1 if task is done, 0 otherwise
+     */
+    protected int getDoneCode() {
+        return this.isDone ? 1 : 0;
+    }
+
+    /**
      * Returns the string representation of the task showing status icon and
      * description.
      *
