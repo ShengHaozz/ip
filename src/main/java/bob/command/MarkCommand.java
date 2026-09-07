@@ -1,7 +1,7 @@
 package bob.command;
 
 import bob.exception.BobException;
-import bob.storage.TaskStorage;
+import bob.storage.Storage;
 import bob.task.Task;
 import bob.task.TaskList;
 import bob.ui.Ui;
@@ -37,7 +37,7 @@ public class MarkCommand extends Command {
      * @throws BobException if the taskId is out of bounds or saving fails
      */
     @Override
-    public void execute(TaskList tasks, Ui ui, TaskStorage storage) throws BobException {
+    public void execute(TaskList tasks, Ui ui, Storage<TaskList> storage) throws BobException {
         assertExecutionDependencies(tasks, ui, storage);
         try {
             Task task = tasks.get(taskId - 1);
@@ -47,7 +47,7 @@ public class MarkCommand extends Command {
                 task.unmark();
             }
             storage.save(tasks);
-            ui.showTaskMarked(task, isDone);
+            ui.setTaskMarked(task, isDone);
         } catch (IndexOutOfBoundsException e) {
             throw new BobException("Error: taskId out of bounds");
         }

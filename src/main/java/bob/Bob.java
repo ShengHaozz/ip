@@ -3,6 +3,7 @@ package bob;
 import bob.command.Command;
 import bob.exception.BobException;
 import bob.parser.Parser;
+import bob.storage.Storage;
 import bob.storage.TaskStorage;
 import bob.task.TaskList;
 import bob.ui.Ui;
@@ -11,7 +12,7 @@ import bob.ui.Ui;
  * Main entry point for the Bob task management application.
  */
 public class Bob {
-    private final TaskStorage storage;
+    private final Storage<TaskList> storage;
     private TaskList tasks;
     private final Ui ui;
 
@@ -26,7 +27,7 @@ public class Bob {
         try {
             this.tasks = this.storage.load();
         } catch (BobException e) {
-            this.ui.showError(e.getMessage());
+            this.ui.setError(e.getMessage());
             this.tasks = new TaskList();
         }
         assert this.ui != null : "Ui should be initialized";
@@ -38,43 +39,43 @@ public class Bob {
      * Runs the main command loop of the application in CLI mode.
      */
     public void run() {
-        ui.showWelcome();
-        boolean isRunning = true;
+        getGreeting();
 
-        while (isRunning && ui.hasNextCommand()) {
+        while (ui.hasNextCommand()) {
             String fullCommand = ui.readCommand();
-            ui.showDividerLine();
-            try {
-                Command c = Parser.parse(fullCommand);
-                c.execute(tasks, ui, storage);
-                this.isExit = c.isExit();
-                isRunning = !this.isExit;
-            } catch (BobException e) {
-                ui.showError(e.getMessage());
+            getResponse(fullCommand);
+            if (this.isExit) {
+                break;
             }
-            ui.showDividerLine();
         }
     }
 
     /**
-     * Generates a response for the user's chat message input in GUI mode.
+     * Generates a response for the user's chat message input in GUI mode and prints
+     * to stdout.
      *
      * @param input the raw input command string entered by the user
-     * @return the response string generated after command execution or error handling
+     * @return the response string generated after command execution or error
+     *         handling
      */
     public String getResponse(String input) {
         assert this.tasks != null : "TaskList should not be null when getting response";
         assert this.ui != null : "Ui should not be null when getting response";
         assert this.storage != null : "TaskStorage should not be null when getting response";
+
+        System.out.println(input);
+
+        ui.showDividerLine();
         try {
             Command c = Parser.parse(input);
             c.execute(tasks, ui, storage);
             this.isExit = c.isExit();
-            return ui.getLastResponse();
         } catch (BobException e) {
-            ui.showError(e.getMessage());
-            return ui.getLastResponse();
+            ui.setError(e.getMessage());
         }
+        System.out.println(ui.getLastResponse());
+        ui.showDividerLine();
+        return ui.getLastResponse();
     }
 
     /**
@@ -92,7 +93,10 @@ public class Bob {
      * @return the initial greeting string
      */
     public String getGreeting() {
-        ui.showWelcome();
+        ui.showDividerLine();
+        ui.setWelcome();
+        System.out.println(ui.getLastResponse());
+        ui.showDividerLine();
         return ui.getLastResponse();
     }
 

@@ -2,6 +2,7 @@ package bob.task;
 
 import java.time.LocalDateTime;
 
+import bob.exception.BobException;
 import bob.util.DatetimeHelper;
 
 /**
@@ -12,19 +13,24 @@ public class Event extends Task {
     private final LocalDateTime to;
 
     /**
-     * Constructs an Event task with the specified description, start time, and end time.
+     * Constructs an Event task with the specified description, start time, and end
+     * time.
      *
      * @param name the description of the event task
      * @param from the start date/time
-     * @param to the end date/time
+     * @param to   the end date/time
+     * @throws BobException if from > to
      */
-    public Event(String name, LocalDateTime from, LocalDateTime to) {
+    public Event(String name, LocalDateTime from, LocalDateTime to) throws BobException {
         super(name);
         assert from != null : "Event start date-time should not be null";
         assert to != null : "Event end date-time should not be null";
         assert !from.isAfter(to) : "Event start date-time must not be after end date-time";
         this.from = from;
         this.to = to;
+        if (from.isAfter(to)) {
+            throw new BobException("Error: from date is after to date");
+        }
     }
 
     /**
@@ -51,7 +57,7 @@ public class Event extends Task {
     public String export() {
         return String.format(
                 "E | %s | %s | %s | %s",
-                this.isDone ? 1 : 0,
+                this.getDoneCode(),
                 this.name,
                 this.from.format(DatetimeHelper.ISO_FORMATTER),
                 this.to.format(DatetimeHelper.ISO_FORMATTER));

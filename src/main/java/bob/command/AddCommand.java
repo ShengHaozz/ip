@@ -1,7 +1,7 @@
 package bob.command;
 
 import bob.exception.BobException;
-import bob.storage.TaskStorage;
+import bob.storage.Storage;
 import bob.task.Task;
 import bob.task.TaskList;
 import bob.ui.Ui;
@@ -33,10 +33,10 @@ public class AddCommand extends Command {
      * @throws BobException if an error occurs while saving to storage
      */
     @Override
-    public void execute(TaskList tasks, Ui ui, TaskStorage storage) throws BobException {
+    public void execute(TaskList tasks, Ui ui, Storage<TaskList> storage) throws BobException {
         assertExecutionDependencies(tasks, ui, storage);
         tasks.add(this.task);
         storage.save(tasks);
-        ui.showTaskAdded(this.task, tasks.size());
+        ui.setTaskAdded(this.task, tasks.size());
     }
 }

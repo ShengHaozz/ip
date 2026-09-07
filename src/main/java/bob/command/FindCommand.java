@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import bob.exception.BobException;
-import bob.storage.TaskStorage;
+import bob.storage.Storage;
 import bob.task.Task;
 import bob.task.TaskList;
 import bob.ui.Ui;
@@ -36,9 +36,9 @@ public class FindCommand extends Command {
      * @throws BobException if an error occurs during execution
      */
     @Override
-    public void execute(TaskList tasks, Ui ui, TaskStorage storage) throws BobException {
+    public void execute(TaskList tasks, Ui ui, Storage<TaskList> storage) throws BobException {
         assertExecutionDependencies(tasks, ui, storage);
         List<Map.Entry<Integer, Task>> matchingEntries = tasks.find(keyword);
-        ui.showMatchingTasks(matchingEntries);
+        ui.setMatchingTasks(matchingEntries);
     }
 }

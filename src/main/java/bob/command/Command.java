@@ -1,7 +1,7 @@
 package bob.command;
 
 import bob.exception.BobException;
-import bob.storage.TaskStorage;
+import bob.storage.Storage;
 import bob.task.TaskList;
 import bob.ui.Ui;
 
@@ -24,7 +24,7 @@ public abstract class Command {
      * @param storage the storage handler
      * @throws BobException if an error occurs during execution
      */
-    public abstract void execute(TaskList tasks, Ui ui, TaskStorage storage) throws BobException;
+    public abstract void execute(TaskList tasks, Ui ui, Storage<TaskList> storage) throws BobException;
 
     /**
      * Asserts that none of the core execution dependencies are null.
