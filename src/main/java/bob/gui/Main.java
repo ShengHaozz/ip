@@ -31,7 +31,7 @@ public final class Main extends Application {
             fxmlLoader.<MainWindow>getController().setBob(bob);
             stage.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Failed to load MainWindow FXML layout", e);
         }
     }
 }
