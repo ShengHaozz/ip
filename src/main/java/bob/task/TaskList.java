@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.IntStream;
 
 /**
  * Represents a list of tasks and provides operations to manipulate the tasks.
@@ -37,14 +38,10 @@ public class TaskList implements Iterable<Task> {
      * @return a list of entries mapping 1-based task index to the matching task
      */
     public List<Map.Entry<Integer, Task>> find(String keyword) {
-        List<Map.Entry<Integer, Task>> matchingTasks = new ArrayList<>();
-        for (int i = 0; i < this.tasks.size(); i++) {
-            Task task = this.tasks.get(i);
-            if (task.containsKeyword(keyword)) {
-                matchingTasks.add(Map.entry(i + 1, task));
-            }
-        }
-        return matchingTasks;
+        return IntStream.range(0, this.tasks.size())
+                .filter(i -> this.tasks.get(i).containsKeyword(keyword)).<Map.Entry<Integer, Task>>mapToObj(
+                        i -> Map.entry(i + 1, this.tasks.get(i)))
+                .toList();
     }
 
     /**
