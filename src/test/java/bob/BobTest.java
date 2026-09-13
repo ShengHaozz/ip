@@ -32,6 +32,25 @@ public class BobTest {
     }
 
     @Test
+    public void getResponse_invalidCommand_setsErrorState() {
+        Bob bob = new Bob();
+
+        bob.getResponse("invalid command 123");
+
+        assertTrue(bob.isLastResponseError());
+    }
+
+    @Test
+    public void getResponse_validCommandAfterError_clearsErrorState() {
+        Bob bob = new Bob();
+        bob.getResponse("invalid command 123");
+
+        bob.getResponse("list");
+
+        assertFalse(bob.isLastResponseError());
+    }
+
+    @Test
     public void getResponse_byeCommand_setsIsExitTrue() {
         Bob bob = new Bob();
         assertFalse(bob.isExit());
