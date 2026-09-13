@@ -7,16 +7,20 @@ import java.time.format.DateTimeFormatter;
  */
 public class DatetimeHelper {
 
-    /** Formatter for parsing user input date-time strings (dd/MM/yy HH:mm). */
+    /**
+     * Provides a formatter for parsing user input date-time strings ({@code dd/MM/yy HH:mm}).
+     */
     public static final DateTimeFormatter INPUT_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yy HH:mm");
 
     /**
-     * Formatter for displaying date-time strings to the user (dd MMMM yyyy, HHmm
-     * 'hrs').
+     * Provides a formatter for displaying date-time strings to the user
+     * ({@code dd MMMM yyyy, HHmm 'hrs'}).
      */
     public static final DateTimeFormatter OUTPUT_FORMATTER = DateTimeFormatter.ofPattern("dd MMMM yyyy, HHmm 'hrs'");
 
-    /** Formatter for ISO-8601 storage format. */
+    /**
+     * Provides a formatter for the ISO-8601 storage format.
+     */
     public static final DateTimeFormatter ISO_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
     /**

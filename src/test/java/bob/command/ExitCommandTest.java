@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 /**
- * Unit tests for {@link ExitCommand}.
+ * Tests the behavior of {@link ExitCommand}.
  */
 public class ExitCommandTest extends CommandTestBase {
 

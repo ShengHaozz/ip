@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import bob.exception.BobException;
 
 /**
- * Unit tests for {@link ToDo}.
+ * Tests the behavior of {@link ToDo}.
  */
 public class ToDoTest {
 

@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 /**
- * Unit tests for {@link Bob}.
+ * Tests the behavior of {@link Bob}.
  */
 public class BobTest {
 

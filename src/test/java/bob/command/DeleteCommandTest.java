@@ -11,7 +11,7 @@ import bob.task.TaskList;
 import bob.task.ToDo;
 
 /**
- * Unit tests for {@link DeleteCommand}.
+ * Tests the behavior of {@link DeleteCommand}.
  */
 public class DeleteCommandTest extends CommandTestBase {
 

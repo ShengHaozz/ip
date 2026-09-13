@@ -13,7 +13,7 @@ import bob.task.TaskList;
 import bob.task.ToDo;
 
 /**
- * Unit tests for {@link Ui}.
+ * Tests the behavior of {@link Ui}.
  */
 public class UiTest {
     private Ui ui;

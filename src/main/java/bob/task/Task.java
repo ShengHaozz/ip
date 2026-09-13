@@ -8,10 +8,14 @@ import bob.exception.BobException;
  * Represents a general task in the task list.
  */
 public abstract class Task {
-    /** Description of the task. */
+    /**
+     * Stores the task description.
+     */
     protected String name;
 
-    /** Completion status of the task. */
+    /**
+     * Indicates whether the task is completed.
+     */
     protected boolean isDone;
 
     /**

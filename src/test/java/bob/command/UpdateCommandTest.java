@@ -16,7 +16,7 @@ import bob.task.TaskList;
 import bob.task.ToDo;
 
 /**
- * Unit tests for {@link UpdateCommand}.
+ * Tests the behavior of {@link UpdateCommand}.
  */
 public class UpdateCommandTest extends CommandTestBase {
 

@@ -11,8 +11,8 @@ import bob.task.TaskList;
 import bob.ui.Ui;
 
 /**
- * Base test fixture for Command unit tests providing pre-initialized
- * task lists, user interface, and isolated temporary storage.
+ * Provides shared command test fixtures with pre-initialized task lists,
+ * a user interface, and isolated temporary storage.
  */
 public abstract class CommandTestBase {
 

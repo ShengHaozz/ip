@@ -9,7 +9,7 @@ import bob.exception.BobException;
 import bob.task.ToDo;
 
 /**
- * Unit tests for {@link FindCommand}.
+ * Tests the behavior of {@link FindCommand}.
  */
 public class FindCommandTest extends CommandTestBase {
 

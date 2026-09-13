@@ -4,7 +4,7 @@ import bob.gui.Main;
 import javafx.application.Application;
 
 /**
- * A launcher class to workaround classpath and JavaFX module issues.
+ * Provides a JavaFX launcher that avoids classpath and module issues.
  */
 public final class Launcher {
 

@@ -17,7 +17,7 @@ import bob.command.UpdateCommand;
 import bob.exception.BobException;
 
 /**
- * Unit tests for {@link Parser}.
+ * Tests the behavior of {@link Parser}.
  */
 public class ParserTest {
 

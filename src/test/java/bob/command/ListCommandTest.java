@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import bob.task.ToDo;
 
 /**
- * Unit tests for {@link ListCommand}.
+ * Tests the behavior of {@link ListCommand}.
  */
 public class ListCommandTest extends CommandTestBase {
 

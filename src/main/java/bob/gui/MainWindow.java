@@ -15,7 +15,7 @@ import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
 /**
- * Controller for the main GUI view.
+ * Controls the main GUI view.
  */
 public final class MainWindow extends AnchorPane {
     private static final double EXIT_DELAY_SECONDS = 0.5;

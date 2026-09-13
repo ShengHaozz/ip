@@ -3,7 +3,7 @@ package bob.storage;
 import bob.exception.BobException;
 
 /**
- * Interface for storage components that load and save data of type T.
+ * Defines operations for loading and saving data of type {@code T}.
  *
  * @param <T> the type of data being loaded and saved
  */

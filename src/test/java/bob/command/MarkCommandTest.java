@@ -11,7 +11,7 @@ import bob.task.TaskList;
 import bob.task.ToDo;
 
 /**
- * Unit tests for {@link MarkCommand}.
+ * Tests the behavior of {@link MarkCommand}.
  */
 public class MarkCommandTest extends CommandTestBase {
 

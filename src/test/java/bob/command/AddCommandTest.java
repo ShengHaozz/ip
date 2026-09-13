@@ -10,7 +10,7 @@ import bob.task.TaskList;
 import bob.task.ToDo;
 
 /**
- * Unit tests for {@link AddCommand}.
+ * Tests the behavior of {@link AddCommand}.
  */
 public class AddCommandTest extends CommandTestBase {
 

@@ -20,7 +20,7 @@ import bob.task.TaskList;
 import bob.task.ToDo;
 
 /**
- * Unit tests for {@link TaskStorage}.
+ * Tests the behavior of {@link TaskStorage}.
  */
 public class TaskStorageTest {
 

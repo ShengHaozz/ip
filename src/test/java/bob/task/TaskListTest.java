@@ -13,7 +13,7 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 /**
- * Unit tests for {@link TaskList}.
+ * Tests the behavior of {@link TaskList}.
  */
 public class TaskListTest {
 

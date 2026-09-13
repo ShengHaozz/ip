@@ -402,12 +402,12 @@ public class Parser {
     }
 
     /**
-     * Data carrier representing an individual flag and its string value.
+     * Represents an individual flag and its string value.
      */
     private record FlagEntry(String flag, String value) {}
 
     /**
-     * Data carrier representing the parsed field values for an update command.
+     * Represents the parsed field values for an update command.
      */
     private record ParsedUpdateFields(String name, LocalDateTime deadline, LocalDateTime from, LocalDateTime to) {}
 }

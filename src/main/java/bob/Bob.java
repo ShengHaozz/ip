@@ -9,7 +9,7 @@ import bob.task.TaskList;
 import bob.ui.Ui;
 
 /**
- * Main entry point for the Bob task management application.
+ * Serves as the main entry point for the Bob task management application.
  */
 public class Bob {
     private final Storage<TaskList> storage;

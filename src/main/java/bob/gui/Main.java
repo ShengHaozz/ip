@@ -10,7 +10,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 /**
- * A graphical user interface for Bob using FXML.
+ * Provides an FXML-based graphical user interface for Bob.
  */
 public final class Main extends Application {
     private final Bob bob = new Bob();
