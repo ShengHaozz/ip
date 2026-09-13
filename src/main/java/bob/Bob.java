@@ -17,6 +17,7 @@ public class Bob {
     private final Ui ui;
 
     private boolean isExit = false;
+    private boolean isLastResponseError = false;
 
     /**
      * Constructs a new Bob application instance.
@@ -66,11 +67,13 @@ public class Bob {
         System.out.println(input);
 
         ui.showDividerLine();
+        this.isLastResponseError = false;
         try {
             Command c = Parser.parse(input);
             c.execute(tasks, ui, storage);
             this.isExit = c.isExit();
         } catch (BobException e) {
+            this.isLastResponseError = true;
             ui.setError(e.getMessage());
         }
         System.out.println(ui.getLastResponse());
@@ -85,6 +88,15 @@ public class Bob {
      */
     public boolean isExit() {
         return isExit;
+    }
+
+    /**
+     * Checks whether the most recent response represents an error.
+     *
+     * @return true if the most recent response is an error, false otherwise
+     */
+    public boolean isLastResponseError() {
+        return isLastResponseError;
     }
 
     /**

@@ -1,22 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<fx:root alignment="TOP_RIGHT"
-         maxHeight="1.7976931348623157E308"
-         maxWidth="1.7976931348623157E308"
-         prefWidth="400.0"
+<fx:root alignment="TOP_LEFT"
+         maxWidth="720.0"
+         minWidth="0.0"
+         spacing="8.0"
+         styleClass="message-row"
          type="javafx.scene.layout.HBox"
          xmlns="http://javafx.com/javafx/17"
          xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <Label fx:id="dialog" text="Label" wrapText="true" minHeight="-Infinity" />
-        <ImageView fx:id="displayPicture" fitHeight="99.0" fitWidth="99.0" pickOnBounds="true" preserveRatio="true" />
+        <ImageView fx:id="displayPicture"
+                   fitHeight="36.0"
+                   fitWidth="36.0"
+                   pickOnBounds="true"
+                   preserveRatio="true"
+                   styleClass="avatar" />
+        <VBox fx:id="messageContainer"
+              minWidth="0.0"
+              styleClass="message-card"
+              HBox.hgrow="ALWAYS">
+            <children>
+                <Label fx:id="senderLabel"
+                       text="BOB"
+                       styleClass="message-sender" />
+                <Label fx:id="dialog"
+                       maxWidth="1.7976931348623157E308"
+                       minWidth="0.0"
+                       text="Label"
+                       wrapText="true"
+                       styleClass="message-text" />
+            </children>
+        </VBox>
     </children>
-    <padding>
-        <Insets bottom="15.0" left="5.0" right="5.0" top="15.0" />
-    </padding>
 </fx:root>

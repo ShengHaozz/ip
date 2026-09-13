@@ -6,18 +6,17 @@ import bob.Bob;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
 /**
  * Controls the main GUI view.
  */
-public final class MainWindow extends AnchorPane {
+public final class MainWindow extends BorderPane {
     private static final double EXIT_DELAY_SECONDS = 0.5;
 
     @FXML
@@ -26,34 +25,31 @@ public final class MainWindow extends AnchorPane {
     private VBox dialogContainer;
     @FXML
     private TextField userInput;
-    @FXML
-    private Button sendButton;
-
     private Bob bob;
 
-    private final Image userImage = new Image(Objects.requireNonNull(
-            this.getClass().getResourceAsStream("/images/DaUser.png")));
     private final Image bobImage = new Image(Objects.requireNonNull(
             this.getClass().getResourceAsStream("/images/DaBob.png")));
 
     /**
-     * Initializes the controller and binds scroll pane height.
+     * Initializes automatic scrolling when conversation content changes.
      */
     @FXML
     public void initialize() {
-        scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
+        dialogContainer.heightProperty().addListener((observable, oldHeight, newHeight) ->
+                scrollToLatestMessage());
     }
 
     /**
      * Injects the Bob instance and displays the initial greeting.
      *
-     * @param b the Bob instance to interact with
+     * @param bob the Bob instance to interact with
      */
-    public void setBob(Bob b) {
-        assert b != null : "Bob instance cannot be null";
-        bob = b;
+    public void setBob(Bob bob) {
+        assert bob != null : "Bob instance cannot be null";
+        this.bob = bob;
         dialogContainer.getChildren().add(
-                DialogBox.getBobDialog(bob.getGreeting(), bobImage));
+                DialogBox.getBobDialog(this.bob.getGreeting(), bobImage));
+        Platform.runLater(userInput::requestFocus);
     }
 
     /**
@@ -69,9 +65,12 @@ public final class MainWindow extends AnchorPane {
         }
 
         String response = bob.getResponse(input);
+        DialogBox responseDialog = bob.isLastResponseError()
+                ? DialogBox.getErrorDialog(response, bobImage)
+                : DialogBox.getBobDialog(response, bobImage);
         dialogContainer.getChildren().addAll(
-                DialogBox.getUserDialog(input, userImage),
-                DialogBox.getBobDialog(response, bobImage));
+                DialogBox.getUserDialog(input),
+                responseDialog);
         userInput.clear();
 
         if (bob.isExit()) {
@@ -79,5 +78,12 @@ public final class MainWindow extends AnchorPane {
             delay.setOnFinished(event -> Platform.exit());
             delay.play();
         }
+    }
+
+    /**
+     * Scrolls to the newest message after JavaFX completes the pending layout pass.
+     */
+    private void scrollToLatestMessage() {
+        Platform.runLater(() -> scrollPane.setVvalue(1.0));
     }
 }

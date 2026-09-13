@@ -1,0 +1,125 @@
+.root {
+    -app-background: #f4f6f8;
+    -app-surface: #ffffff;
+    -app-text: #172b4d;
+    -app-muted: #5e6c84;
+    -app-border: #d8dee8;
+    -app-primary: #1f4e8c;
+    -app-primary-hover: #183d70;
+    -app-focus: #4c9aff;
+    -app-error: #b42318;
+    -app-error-background: #fff1f0;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 13px;
+}
+
+.app-root,
+.conversation-scroll,
+.conversation-scroll > .viewport,
+.conversation {
+    -fx-background-color: -app-background;
+}
+
+.conversation-scroll {
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+.conversation-scroll:focused {
+    -fx-background-insets: 0;
+}
+
+.message-row {
+    -fx-padding: 2px 0;
+}
+
+.message-card {
+    -fx-background-color: -app-surface;
+    -fx-background-radius: 8px;
+    -fx-border-color: -app-border;
+    -fx-border-radius: 8px;
+    -fx-border-width: 1px;
+    -fx-padding: 8px 12px;
+    -fx-spacing: 3px;
+}
+
+.message-sender {
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -app-muted;
+}
+
+.message-text {
+    -fx-line-spacing: 2px;
+    -fx-text-fill: -app-text;
+}
+
+.user-message .message-card {
+    -fx-background-color: -app-primary;
+    -fx-border-color: -app-primary;
+}
+
+.user-message .message-text {
+    -fx-text-fill: white;
+}
+
+.error-message .message-card {
+    -fx-background-color: -app-error-background;
+    -fx-border-color: -app-error;
+    -fx-border-width: 0 0 0 3px;
+}
+
+.error-message .message-sender,
+.error-message .message-text {
+    -fx-text-fill: -app-error;
+}
+
+.avatar {
+    -fx-opacity: 0.96;
+}
+
+.composer {
+    -fx-background-color: -app-surface;
+    -fx-border-color: -app-border transparent transparent transparent;
+    -fx-border-width: 1px 0 0 0;
+}
+
+.command-input {
+    -fx-background-color: -app-background;
+    -fx-background-radius: 6px;
+    -fx-border-color: -app-border;
+    -fx-border-radius: 6px;
+    -fx-border-width: 1px;
+    -fx-min-height: 36px;
+    -fx-padding: 7px 10px;
+    -fx-prompt-text-fill: -app-muted;
+    -fx-text-fill: -app-text;
+}
+
+.command-input:focused {
+    -fx-background-color: -app-surface;
+    -fx-border-color: -app-focus;
+    -fx-border-width: 2px;
+    -fx-padding: 6px 9px;
+}
+
+.send-button {
+    -fx-background-color: -app-primary;
+    -fx-background-radius: 6px;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+    -fx-min-height: 36px;
+    -fx-min-width: 72px;
+    -fx-padding: 7px 14px;
+    -fx-text-fill: white;
+}
+
+.send-button:hover {
+    -fx-background-color: -app-primary-hover;
+}
+
+.send-button:focused {
+    -fx-border-color: -app-focus;
+    -fx-border-radius: 6px;
+    -fx-border-width: 2px;
+}
