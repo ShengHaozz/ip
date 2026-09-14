@@ -17,6 +17,7 @@ public class Bob {
     private final Storage<TaskList> storage;
     private TaskList tasks;
     private final Ui ui;
+    private int invalidTaskCount;
 
     private boolean isExit = false;
     private boolean isLastResponseError = false;
@@ -25,17 +26,32 @@ public class Bob {
      * Constructs a new Bob application instance.
      */
     public Bob() {
+        this(new TaskStorage());
+    }
+
+    Bob(TaskStorage taskStorage) {
+        assert taskStorage != null : "TaskStorage cannot be null";
         this.ui = new Ui();
-        this.storage = new TaskStorage();
+        this.storage = taskStorage;
+        loadTasks(taskStorage);
+        assert this.ui != null : "Ui should be initialized";
+        assert this.storage != null : "TaskStorage should be initialized";
+        assert this.tasks != null : "TaskList should be initialized";
+    }
+
+    /**
+     * Loads valid tasks and records invalid storage lines for the startup report.
+     *
+     * @param taskStorage the task storage to load
+     */
+    private void loadTasks(TaskStorage taskStorage) {
         try {
             this.tasks = this.storage.load();
+            this.invalidTaskCount = taskStorage.getInvalidTaskCount();
         } catch (BobException e) {
             this.ui.setError(e.getMessage());
             this.tasks = new TaskList();
         }
-        assert this.ui != null : "Ui should be initialized";
-        assert this.storage != null : "TaskStorage should be initialized";
-        assert this.tasks != null : "TaskList should be initialized";
     }
 
     /**
@@ -109,7 +125,7 @@ public class Bob {
      */
     public String getGreeting() {
         ui.showDividerLine();
-        ui.setWelcome();
+        ui.setWelcome(tasks, invalidTaskCount);
         System.out.println(ui.getLastResponse());
         ui.showDividerLine();
         return ui.getLastResponse();

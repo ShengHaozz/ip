@@ -36,14 +36,10 @@ import bob.util.DatetimeHelper;
 public class TaskStorage implements Storage<TaskList> {
 
     private static final Path FILE_PATH = Paths.get("data", "tasks.txt");
-    private static final String STORAGE_DELIMITER_REGEX = " \\| ";
-    private static final String TYPE_TODO = "T";
-    private static final String TYPE_DEADLINE = "D";
-    private static final String TYPE_EVENT = "E";
-    private static final String STATUS_DONE = "1";
-    private static final String STATUS_NOT_DONE = "0";
 
     private final Path path;
+    private final TaskStorageParser parser = new TaskStorageParser();
+    private final List<String> invalidTaskLines = new ArrayList<>();
 
     /**
      * Constructs a TaskStorage instance using the default storage path
@@ -66,35 +62,83 @@ public class TaskStorage implements Storage<TaskList> {
     /**
      * Loads the tasks from the persistent storage file.
      *
-     * @return a {@link TaskList} containing all parsed tasks, or an empty list if
-     *         file doesn't exist
-     * @throws BobException if an I/O error occurs or the file content is malformed
+     * Invalid task lines are omitted, and the storage file is rewritten without
+     * them so that later loads do not encounter the same corruption.
+     *
+     * @return a {@link TaskList} containing all valid parsed tasks, or an empty list
+     *         if the file does not exist
+     * @throws BobException if an I/O error occurs while reading or cleaning the file
      */
     @Override
     public TaskList load() throws BobException {
-        List<Task> tasks = new ArrayList<>();
+        invalidTaskLines.clear();
 
         // No file on first startup -> return empty task list.
         if (!Files.exists(path)) {
-            return new TaskList(tasks);
+            return new TaskList();
         }
 
+        List<String> lines = readTaskLines();
+        TaskList validTasks = parseStoredTasks(lines);
+        removeInvalidTaskLines(validTasks);
+        return validTasks;
+    }
+
+    /**
+     * Reads all lines from the storage file.
+     *
+     * @return the lines read from storage
+     * @throws BobException if the file cannot be read
+     */
+    private List<String> readTaskLines() throws BobException {
         try {
-            List<String> lines = Files.readAllLines(path);
-
-            for (String line : lines) {
-                if (line.isBlank()) {
-                    continue;
-                }
-
-                tasks.add(parseTask(line));
-            }
-
+            return Files.readAllLines(path);
         } catch (IOException e) {
             throw new BobException("I/O Error: Unable to load tasks from storage");
         }
+    }
 
-        return new TaskList(tasks);
+    /**
+     * Parses valid tasks and records invalid storage lines.
+     *
+     * @param lines the storage lines to parse
+     * @return the tasks parsed from valid lines
+     */
+    private TaskList parseStoredTasks(List<String> lines) {
+        List<Task> validTasks = new ArrayList<>();
+        for (String line : lines) {
+            if (line.isBlank()) {
+                continue;
+            }
+
+            try {
+                validTasks.add(parser.parse(line));
+            } catch (BobException e) {
+                invalidTaskLines.add(line);
+            }
+        }
+        return new TaskList(validTasks);
+    }
+
+    /**
+     * Rewrites storage without invalid lines when corruption was detected.
+     *
+     * @param validTasks the tasks that remain valid
+     * @throws BobException if the cleaned tasks cannot be saved
+     */
+    private void removeInvalidTaskLines(TaskList validTasks) throws BobException {
+        if (!invalidTaskLines.isEmpty()) {
+            save(validTasks);
+        }
+    }
+
+    /**
+     * Returns the number of invalid task lines discarded during the most recent load.
+     *
+     * @return the number of discarded storage lines
+     */
+    public int getInvalidTaskCount() {
+        return invalidTaskLines.size();
     }
 
     /**
@@ -125,15 +169,27 @@ public class TaskStorage implements Storage<TaskList> {
         }
     }
 
+}
+
+/**
+ * Parses tasks from their persistent storage representation.
+ */
+class TaskStorageParser {
+    private static final String STORAGE_DELIMITER_REGEX = " \\| ";
+    private static final String TYPE_TODO = "T";
+    private static final String TYPE_DEADLINE = "D";
+    private static final String TYPE_EVENT = "E";
+    private static final String STATUS_DONE = "1";
+    private static final String STATUS_NOT_DONE = "0";
+
     /**
-     * Parses a single line from the storage file into a {@link Task} object.
+     * Parses a single storage line into a task.
      *
-     * @param line the formatted string representation of a task
-     * @return the parsed {@link Task}
-     * @throws BobException if the line format is invalid or contains unparseable
-     *                      dates
+     * @param line the storage line to parse
+     * @return the parsed task
+     * @throws BobException if the storage line is invalid
      */
-    private Task parseTask(String line) throws BobException {
+    Task parse(String line) throws BobException {
         assert line != null && !line.isBlank() : "Line to parse should not be null or blank";
         String[] parts = line.split(STORAGE_DELIMITER_REGEX);
 
@@ -141,61 +197,49 @@ public class TaskStorage implements Storage<TaskList> {
             throw new BobException("Error: Invalid task export format: " + line);
         }
 
-        String type = parts[0];
-        boolean isDone;
-        if (parts[1].equals(STATUS_DONE)) {
-            isDone = true;
-        } else if (parts[1].equals(STATUS_NOT_DONE)) {
-            isDone = false;
-        } else {
-            throw new BobException("Error: Invalid done status: " + line);
-        }
-
-        Task task;
-        switch (type) {
-            case TYPE_TODO:
-                task = parseTodoFromStorage(parts);
-                break;
-
-            case TYPE_DEADLINE:
-                task = parseDeadlineFromStorage(parts, line);
-                break;
-
-            case TYPE_EVENT:
-                task = parseEventFromStorage(parts, line);
-                break;
-
-            default:
-                throw new BobException("Error: Unknown task type of " + type);
-        }
-
-        if (isDone) {
-            task.mark();
-        }
-
+        boolean isDone = parseDoneStatus(parts[1], line);
+        Task task = parseTaskByType(parts, line);
+        markTaskIfDone(task, isDone);
         return task;
     }
 
-    /**
-     * Parses a {@link ToDo} task from storage line tokens.
-     *
-     * @param parts the tokens extracted from the storage line
-     * @return the parsed {@link ToDo} task
-     */
-    private Task parseTodoFromStorage(String[] parts) {
+    private Task parseTaskByType(String[] parts, String line) throws BobException {
+        switch (parts[0]) {
+            case TYPE_TODO:
+                return parseTodo(parts);
+
+            case TYPE_DEADLINE:
+                return parseDeadline(parts, line);
+
+            case TYPE_EVENT:
+                return parseEvent(parts, line);
+
+            default:
+                throw new BobException("Error: Unknown task type of " + parts[0]);
+        }
+    }
+
+    private boolean parseDoneStatus(String status, String line) throws BobException {
+        if (status.equals(STATUS_DONE)) {
+            return true;
+        }
+        if (status.equals(STATUS_NOT_DONE)) {
+            return false;
+        }
+        throw new BobException("Error: Invalid done status: " + line);
+    }
+
+    private void markTaskIfDone(Task task, boolean isDone) {
+        if (isDone) {
+            task.mark();
+        }
+    }
+
+    private Task parseTodo(String[] parts) {
         return new ToDo(parts[2]);
     }
 
-    /**
-     * Parses a {@link Deadline} task from storage line tokens.
-     *
-     * @param parts the tokens extracted from the storage line
-     * @param line  the raw storage line for error reporting
-     * @return the parsed {@link Deadline} task
-     * @throws BobException if the token count is invalid or date format cannot be
-     *                      parsed
-     */
-    private Task parseDeadlineFromStorage(String[] parts, String line) throws BobException {
+    private Task parseDeadline(String[] parts, String line) throws BobException {
         if (parts.length != 4) {
             throw new BobException("Error: Corrupted deadline format: " + line);
         }
@@ -208,16 +252,7 @@ public class TaskStorage implements Storage<TaskList> {
         }
     }
 
-    /**
-     * Parses an {@link Event} task from storage line tokens.
-     *
-     * @param parts the tokens extracted from the storage line
-     * @param line  the raw storage line for error reporting
-     * @return the parsed {@link Event} task
-     * @throws BobException if the token count is invalid or date format cannot be
-     *                      parsed
-     */
-    private Task parseEventFromStorage(String[] parts, String line) throws BobException {
+    private Task parseEvent(String[] parts, String line) throws BobException {
         if (parts.length != 5) {
             throw new BobException("Error: Corrupted event format: " + line);
         }

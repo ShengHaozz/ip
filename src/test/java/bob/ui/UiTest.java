@@ -30,6 +30,20 @@ public class UiTest {
     }
 
     @Test
+    public void setWelcome_withLoadReport_listsLoadedTasksAndInvalidCount() {
+        TaskList loadedTasks = new TaskList();
+        ToDo loadedTask = new ToDo("testing");
+        loadedTask.mark();
+        loadedTasks.add(loadedTask);
+
+        ui.setWelcome(loadedTasks, 1);
+
+        assertEquals("Morning! Bob here. What's the next job?\n"
+                + "Loaded tasks:\n1: [T][X] testing\n"
+                + "Skipped invalid tasks: 1", ui.getLastResponse());
+    }
+
+    @Test
     public void setGoodbye_updatesLastResponse() {
         ui.setGoodbye();
         assertEquals("Tools down. Good work today!", ui.getLastResponse());

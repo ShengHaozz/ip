@@ -5,12 +5,23 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
+import bob.storage.TaskStorage;
 
 /**
  * Tests the behavior of {@link Bob}.
  */
 public class BobTest {
+
+    @TempDir
+    private Path tempDir;
 
     @Test
     public void getGreeting_returnsWelcomeMessage() {
@@ -18,6 +29,19 @@ public class BobTest {
         String greeting = bob.getGreeting();
         assertNotNull(greeting);
         assertTrue(greeting.contains("Morning! Bob here."));
+    }
+
+    @Test
+    public void getGreeting_validAndInvalidStoredTasks_reportsLoadedTasksAndInvalidCount() throws IOException {
+        Path testFile = tempDir.resolve("tasks.txt");
+        Files.write(testFile, List.of("T | 0", "T | 1 | testing"));
+        Bob bob = new Bob(new TaskStorage(testFile));
+
+        String greeting = bob.getGreeting();
+
+        assertEquals("Morning! Bob here. What's the next job?\n"
+                + "Loaded tasks:\n1: [T][X] testing\n"
+                + "Skipped invalid tasks: 1", greeting);
     }
 
     @Test

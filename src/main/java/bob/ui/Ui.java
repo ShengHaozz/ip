@@ -33,6 +33,35 @@ public class Ui {
     }
 
     /**
+     * Sets the welcome response with the results of loading tasks from storage.
+     *
+     * @param loadedTasks the valid tasks loaded from storage
+     * @param invalidTaskCount the number of invalid storage lines that were skipped
+     */
+    public void setWelcome(TaskList loadedTasks, int invalidTaskCount) {
+        assert loadedTasks != null : "Loaded task list cannot be null";
+        assert invalidTaskCount >= 0 : "Invalid task count cannot be negative";
+
+        String formattedLoadedTasks = formatLoadedTasks(loadedTasks);
+        this.lastResponse = "Morning! Bob here. What's the next job?\n"
+                + "Loaded tasks:\n" + formattedLoadedTasks + "\n"
+                + "Skipped invalid tasks: " + invalidTaskCount;
+    }
+
+    /**
+     * Formats loaded tasks as a numbered list.
+     *
+     * @param loadedTasks the loaded tasks to format
+     * @return the numbered tasks, or {@code None.} when no tasks were loaded
+     */
+    private String formatLoadedTasks(TaskList loadedTasks) {
+        String formattedLoadedTasks = IntStream.range(0, loadedTasks.size())
+                .<String>mapToObj(i -> String.format("%d: %s", i + 1, loadedTasks.get(i)))
+                .collect(Collectors.joining("\n"));
+        return formattedLoadedTasks.isEmpty() ? "None." : formattedLoadedTasks;
+    }
+
+    /**
      * Sets the goodbye response message.
      */
     public void setGoodbye() {

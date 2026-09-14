@@ -1,7 +1,6 @@
 package bob.storage;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -90,57 +89,78 @@ public class TaskStorageTest {
     }
 
     @Test
-    public void load_corruptedTaskType_throwsBobException() throws IOException {
+    public void load_corruptedTaskType_removesInvalidLine() throws IOException, BobException {
         Path testFile = tempDir.resolve("corrupted_type.txt");
         Files.write(testFile, List.of("X | 0 | invalid task type"));
 
         TaskStorage storage = new TaskStorage(testFile);
-        assertThrows(BobException.class, () -> storage.load());
+        TaskList loadedTasks = storage.load();
+
+        assertTrue(loadedTasks.isEmpty());
+        assertTrue(Files.readAllLines(testFile).isEmpty());
     }
 
     @Test
-    public void load_insufficientFields_throwsBobException() throws IOException {
+    public void load_invalidTodoBeforeValidTodo_loadsValidTodoAndRemovesInvalidLine()
+            throws IOException, BobException {
         Path testFile = tempDir.resolve("insufficient_fields.txt");
-        Files.write(testFile, List.of("T | 0"));
+        Files.write(testFile, List.of("T | 0", "T | 1 | testing"));
 
         TaskStorage storage = new TaskStorage(testFile);
-        assertThrows(BobException.class, () -> storage.load());
+        TaskList loadedTasks = storage.load();
+
+        assertEquals(1, loadedTasks.size());
+        assertEquals("T | 1 | testing", loadedTasks.get(0).export());
+        assertEquals(1, storage.getInvalidTaskCount());
+        assertEquals(List.of("T | 1 | testing"), Files.readAllLines(testFile));
     }
 
     @Test
-    public void load_corruptedDeadlineFieldCount_throwsBobException() throws IOException {
+    public void load_corruptedDeadlineFieldCount_removesInvalidLine() throws IOException, BobException {
         Path testFile = tempDir.resolve("corrupted_deadline_count.txt");
         Files.write(testFile, List.of("D | 0 | submit paper"));
 
         TaskStorage storage = new TaskStorage(testFile);
-        assertThrows(BobException.class, () -> storage.load());
+        TaskList loadedTasks = storage.load();
+
+        assertTrue(loadedTasks.isEmpty());
+        assertTrue(Files.readAllLines(testFile).isEmpty());
     }
 
     @Test
-    public void load_corruptedDeadlineDateFormat_throwsBobException() throws IOException {
+    public void load_corruptedDeadlineDateFormat_removesInvalidLine() throws IOException, BobException {
         Path testFile = tempDir.resolve("corrupted_deadline.txt");
         Files.write(testFile, List.of("D | 0 | submit paper | invalid-date"));
 
         TaskStorage storage = new TaskStorage(testFile);
-        assertThrows(BobException.class, () -> storage.load());
+        TaskList loadedTasks = storage.load();
+
+        assertTrue(loadedTasks.isEmpty());
+        assertTrue(Files.readAllLines(testFile).isEmpty());
     }
 
     @Test
-    public void load_corruptedEventFieldCount_throwsBobException() throws IOException {
+    public void load_corruptedEventFieldCount_removesInvalidLine() throws IOException, BobException {
         Path testFile = tempDir.resolve("corrupted_event.txt");
         Files.write(testFile, List.of("E | 0 | workshop | 2026-09-01T09:00"));
 
         TaskStorage storage = new TaskStorage(testFile);
-        assertThrows(BobException.class, () -> storage.load());
+        TaskList loadedTasks = storage.load();
+
+        assertTrue(loadedTasks.isEmpty());
+        assertTrue(Files.readAllLines(testFile).isEmpty());
     }
 
     @Test
-    public void load_corruptedEventDateFormat_throwsBobException() throws IOException {
+    public void load_corruptedEventDateFormat_removesInvalidLine() throws IOException, BobException {
         Path testFile = tempDir.resolve("corrupted_event_date.txt");
         Files.write(testFile, List.of("E | 0 | workshop | invalid-from | invalid-to"));
 
         TaskStorage storage = new TaskStorage(testFile);
-        assertThrows(BobException.class, () -> storage.load());
+        TaskList loadedTasks = storage.load();
+
+        assertTrue(loadedTasks.isEmpty());
+        assertTrue(Files.readAllLines(testFile).isEmpty());
     }
 
     @Test
