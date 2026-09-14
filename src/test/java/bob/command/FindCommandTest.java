@@ -24,7 +24,7 @@ public class FindCommandTest extends CommandTestBase {
         command.execute(tasks, ui, storage);
 
         String output = ui.getLastResponse();
-        assertTrue(output.contains("Here are the matching tasks in your list:"));
+        assertTrue(output.contains("These jobs match:"));
         assertTrue(output.contains("1.[T][ ] read book"));
         assertTrue(output.contains("2.[T][ ] return book"));
         assertTrue(output.contains("4.[T][ ] read another book"));

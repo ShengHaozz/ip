@@ -109,10 +109,10 @@ public final class DialogBox extends HBox {
                 setAccessibleText("You: " + text);
                 break;
             case BOB:
-                configureResponse(image, "BOB", "bot-message", "Bob: " + text);
+                configureResponse(image, "BOB | FOREMAN", "bot-message", "Bob: " + text);
                 break;
             case ERROR:
-                configureResponse(image, "ERROR", "error-message", "Error: " + text);
+                configureResponse(image, "BOB | HOLD UP", "error-message", "Bob warning: " + text);
                 break;
             default:
                 throw new AssertionError("Unhandled message type: " + messageType);

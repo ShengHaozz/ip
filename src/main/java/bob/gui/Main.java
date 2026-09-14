@@ -35,7 +35,7 @@ public final class Main extends Application {
             scene.getStylesheets().add(Objects.requireNonNull(
                     Main.class.getResource("/css/main.css")).toExternalForm());
             stage.setScene(scene);
-            stage.setTitle("Bob");
+            stage.setTitle("Bob - Task Foreman");
             stage.setMinWidth(MINIMUM_WIDTH);
             stage.setMinHeight(MINIMUM_HEIGHT);
             stage.setResizable(true);

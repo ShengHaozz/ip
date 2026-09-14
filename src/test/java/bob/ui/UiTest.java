@@ -26,43 +26,43 @@ public class UiTest {
     @Test
     public void setWelcome_updatesLastResponse() {
         ui.setWelcome();
-        assertEquals("Hello! I'm Bob.\nWhat can I do for you?", ui.getLastResponse());
+        assertEquals("Morning! Bob here. What's the next job?", ui.getLastResponse());
     }
 
     @Test
     public void setGoodbye_updatesLastResponse() {
         ui.setGoodbye();
-        assertEquals("Goodbye.", ui.getLastResponse());
+        assertEquals("Tools down. Good work today!", ui.getLastResponse());
     }
 
     @Test
     public void setTaskAdded_updatesLastResponse() {
         Task task = new ToDo("read book");
         ui.setTaskAdded(task, 1);
-        assertEquals("Task added:\n[T][ ] read book\n1 item in list", ui.getLastResponse());
+        assertEquals("Added to the build plan:\n[T][ ] read book\n1 job on the board", ui.getLastResponse());
 
         ui.setTaskAdded(task, 2);
-        assertEquals("Task added:\n[T][ ] read book\n2 items in list", ui.getLastResponse());
+        assertEquals("Added to the build plan:\n[T][ ] read book\n2 jobs on the board", ui.getLastResponse());
     }
 
     @Test
     public void setTaskDeleted_updatesLastResponse() {
         Task task = new ToDo("read book");
         ui.setTaskDeleted(task, 0);
-        assertEquals("Removed: \n[T][ ] read book\n0 item in list", ui.getLastResponse());
+        assertEquals("Removed from the build plan:\n[T][ ] read book\n0 jobs on the board", ui.getLastResponse());
 
         ui.setTaskDeleted(task, 3);
-        assertEquals("Removed: \n[T][ ] read book\n3 items in list", ui.getLastResponse());
+        assertEquals("Removed from the build plan:\n[T][ ] read book\n3 jobs on the board", ui.getLastResponse());
     }
 
     @Test
     public void setTaskMarked_updatesLastResponse() {
         Task task = new ToDo("read book");
         ui.setTaskMarked(task, true);
-        assertEquals("Marked as done:\n [T][ ] read book", ui.getLastResponse());
+        assertEquals("Job complete:\n [T][ ] read book", ui.getLastResponse());
 
         ui.setTaskMarked(task, false);
-        assertEquals("Marked as not done:\n [T][ ] read book", ui.getLastResponse());
+        assertEquals("Job reopened:\n [T][ ] read book", ui.getLastResponse());
     }
 
     @Test
@@ -71,14 +71,28 @@ public class UiTest {
         tasks.add(new ToDo("task 1"));
         tasks.add(new ToDo("task 2"));
         ui.setTaskList(tasks);
-        assertEquals("Tasks:\n1: [T][ ] task 1\n2: [T][ ] task 2", ui.getLastResponse());
+        assertEquals("Today's job board:\n1: [T][ ] task 1\n2: [T][ ] task 2", ui.getLastResponse());
+    }
+
+    @Test
+    public void setTaskList_emptyList_updatesLastResponse() {
+        ui.setTaskList(new TaskList());
+
+        assertEquals("The job board is clear.", ui.getLastResponse());
     }
 
     @Test
     public void setMatchingTasks_updatesLastResponse() {
         Task task = new ToDo("task 1");
         ui.setMatchingTasks(List.of(new AbstractMap.SimpleEntry<>(1, task)));
-        assertEquals("Here are the matching tasks in your list:\n1.[T][ ] task 1", ui.getLastResponse());
+        assertEquals("These jobs match:\n1.[T][ ] task 1", ui.getLastResponse());
+    }
+
+    @Test
+    public void setMatchingTasks_noMatches_updatesLastResponse() {
+        ui.setMatchingTasks(List.of());
+
+        assertEquals("No matching jobs found.", ui.getLastResponse());
     }
 
     @Test
@@ -95,6 +109,6 @@ public class UiTest {
         Task before = new ToDo("old task");
         Task after = new ToDo("new task");
         ui.setTaskUpdated(before, after);
-        assertEquals("Task updated from:\n  [T][ ] old task\nto:\n  [T][ ] new task", ui.getLastResponse());
+        assertEquals("Plan revised from:\n  [T][ ] old task\nto:\n  [T][ ] new task", ui.getLastResponse());
     }
 }

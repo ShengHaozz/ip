@@ -21,6 +21,6 @@ public class ExitCommandTest extends CommandTestBase {
     public void execute_setsGoodbyeWithoutError() {
         ExitCommand command = new ExitCommand();
         assertDoesNotThrow(() -> command.execute(tasks, ui, storage));
-        assertEquals("Goodbye.", ui.getLastResponse());
+        assertEquals("Tools down. Good work today!", ui.getLastResponse());
     }
 }

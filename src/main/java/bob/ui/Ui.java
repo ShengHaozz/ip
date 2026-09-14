@@ -29,14 +29,14 @@ public class Ui {
      * Sets the welcome greeting response.
      */
     public void setWelcome() {
-        this.lastResponse = "Hello! I'm Bob.\nWhat can I do for you?";
+        this.lastResponse = "Morning! Bob here. What's the next job?";
     }
 
     /**
      * Sets the goodbye response message.
      */
     public void setGoodbye() {
-        this.lastResponse = "Goodbye.";
+        this.lastResponse = "Tools down. Good work today!";
     }
 
     /**
@@ -75,7 +75,9 @@ public class Ui {
                 .<String>mapToObj(i -> String.format("%d: %s", i + 1, tasks.get(i).toString()))
                 .collect(Collectors.joining("\n"));
 
-        this.lastResponse = formattedTasks.isEmpty() ? "No Tasks" : "Tasks:\n" + formattedTasks;
+        this.lastResponse = formattedTasks.isEmpty()
+                ? "The job board is clear."
+                : "Today's job board:\n" + formattedTasks;
     }
 
     /**
@@ -92,8 +94,9 @@ public class Ui {
                 .<String>map(entry -> String.format("%d.%s", entry.getKey(), entry.getValue().toString()))
                 .collect(Collectors.joining("\n"));
 
-        this.lastResponse = formattedTasks.isEmpty() ? "No matching tasks"
-                : "Here are the matching tasks in your list:\n" + formattedTasks;
+        this.lastResponse = formattedTasks.isEmpty()
+                ? "No matching jobs found."
+                : "These jobs match:\n" + formattedTasks;
     }
 
     /**
@@ -105,8 +108,8 @@ public class Ui {
     public void setTaskAdded(Task task, int totalCount) {
         assert task != null : "Added task cannot be null";
         assert totalCount >= 0 : "Total task count cannot be negative";
-        this.lastResponse = String.format("Task added:\n%s\n%d %s in list",
-                task.toString(), totalCount, totalCount < 2 ? "item" : "items");
+        this.lastResponse = String.format("Added to the build plan:\n%s\n%d %s on the board",
+                task.toString(), totalCount, totalCount == 1 ? "job" : "jobs");
     }
 
     /**
@@ -118,8 +121,8 @@ public class Ui {
     public void setTaskDeleted(Task task, int totalCount) {
         assert task != null : "Deleted task cannot be null";
         assert totalCount >= 0 : "Total task count cannot be negative";
-        this.lastResponse = String.format("Removed: \n%s\n%d %s in list",
-                task.toString(), totalCount, totalCount < 2 ? "item" : "items");
+        this.lastResponse = String.format("Removed from the build plan:\n%s\n%d %s on the board",
+                task.toString(), totalCount, totalCount == 1 ? "job" : "jobs");
     }
 
     /**
@@ -130,12 +133,13 @@ public class Ui {
      */
     public void setTaskMarked(Task task, boolean isDone) {
         assert task != null : "Task to mark/unmark cannot be null";
-        String status = isDone ? "Marked as done:" : "Marked as not done:";
+        String status = isDone ? "Job complete:" : "Job reopened:";
         this.lastResponse = status + "\n " + task.toString();
     }
 
     /**
-     * Sets the response message after updating a task, showing before and after details.
+     * Sets the response message after updating a task, showing before and after
+     * details.
      *
      * @param before the task state before update
      * @param after  the task state after update
@@ -143,7 +147,7 @@ public class Ui {
     public void setTaskUpdated(Task before, Task after) {
         assert before != null : "Before task cannot be null";
         assert after != null : "After task cannot be null";
-        this.lastResponse = String.format("Task updated from:\n  %s\nto:\n  %s",
+        this.lastResponse = String.format("Plan revised from:\n  %s\nto:\n  %s",
                 before.toString(), after.toString());
     }
 

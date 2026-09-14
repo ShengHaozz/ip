@@ -1,5 +1,6 @@
 package bob;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -16,7 +17,7 @@ public class BobTest {
         Bob bob = new Bob();
         String greeting = bob.getGreeting();
         assertNotNull(greeting);
-        assertTrue(greeting.contains("Hello! I'm Bob."));
+        assertTrue(greeting.contains("Morning! Bob here."));
     }
 
     @Test
@@ -24,11 +25,11 @@ public class BobTest {
         Bob bob = new Bob();
         String response = bob.getResponse("list");
         assertNotNull(response);
-        assertTrue(response.contains("Tasks:"));
+        assertTrue(response.contains("job board"));
 
         String errorResponse = bob.getResponse("invalid command 123");
         assertNotNull(errorResponse);
-        assertTrue(errorResponse.contains("What's that?"));
+        assertEquals("What's that?", errorResponse);
     }
 
     @Test
@@ -57,7 +58,7 @@ public class BobTest {
 
         String response = bob.getResponse("bye");
         assertNotNull(response);
-        assertTrue(response.contains("Goodbye."));
+        assertTrue(response.contains("Tools down."));
         assertTrue(bob.isExit());
     }
 }
