@@ -172,7 +172,7 @@ public class UpdateCommandTest extends CommandTestBase {
         UpdateCommand cmd = new UpdateCommand(1, "changed task", null, null, null);
         cmd.execute(tasks, ui, storage);
 
-        String expected = "Task updated from:\n  [T][ ] original task\nto:\n  [T][ ] changed task";
+        String expected = "Plan revised from:\n  [T][ ] original task\nto:\n  [T][ ] changed task";
         assertEquals(expected, ui.getLastResponse());
     }
 

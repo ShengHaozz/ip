@@ -24,6 +24,6 @@ public class ListCommandTest extends CommandTestBase {
         tasks.add(new ToDo("task 1"));
         ListCommand command = new ListCommand();
         assertDoesNotThrow(() -> command.execute(tasks, ui, storage));
-        assertEquals("Tasks:\n1: [T][ ] task 1", ui.getLastResponse());
+        assertEquals("Today's job board:\n1: [T][ ] task 1", ui.getLastResponse());
     }
 }
