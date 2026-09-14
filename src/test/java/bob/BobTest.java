@@ -33,6 +33,15 @@ public class BobTest {
     }
 
     @Test
+    public void getResponse_uppercaseCommand_parsesSuccessfully() {
+        Bob bob = new Bob();
+
+        String response = bob.getResponse("LIST");
+
+        assertTrue(response.contains("job board"));
+    }
+
+    @Test
     public void getResponse_invalidCommand_setsErrorState() {
         Bob bob = new Bob();
 

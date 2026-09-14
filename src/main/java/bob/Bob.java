@@ -1,5 +1,7 @@
 package bob;
 
+import java.util.Locale;
+
 import bob.command.Command;
 import bob.exception.BobException;
 import bob.parser.Parser;
@@ -69,9 +71,10 @@ public class Bob {
         ui.showDividerLine();
         this.isLastResponseError = false;
         try {
-            Command c = Parser.parse(input);
-            c.execute(tasks, ui, storage);
-            this.isExit = c.isExit();
+            String normalizedInput = input == null ? null : input.toLowerCase(Locale.ROOT);
+            Command command = Parser.parse(normalizedInput);
+            command.execute(tasks, ui, storage);
+            this.isExit = command.isExit();
         } catch (BobException e) {
             this.isLastResponseError = true;
             ui.setError(e.getMessage());
