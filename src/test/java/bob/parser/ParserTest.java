@@ -109,6 +109,14 @@ public class ParserTest {
     }
 
     @Test
+    public void parse_nonexistentDate_throwsBobException() {
+        assertThrows(BobException.class, () -> Parser.parse("deadline error /by 31/09/26 10:00"));
+        assertThrows(BobException.class, () -> Parser.parse(
+                "event error /from 31/09/26 10:00 /to 01/10/26 10:00"));
+        assertThrows(BobException.class, () -> Parser.parse("update 1 /by 31/09/26 10:00"));
+    }
+
+    @Test
     public void parse_eventCommand_returnsAddCommand() throws BobException {
         Command command = Parser.parse("event team meeting /from 11/11/26 14:00 /to 11/11/26 16:00");
         assertInstanceOf(AddCommand.class, command);
