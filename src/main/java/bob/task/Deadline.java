@@ -47,13 +47,14 @@ public class Deadline extends Task {
     /**
      * Formats the deadline task as a string suitable for persistent storage export.
      *
-     * @return pipe-delimited string representation of this deadline task
+     * @return delimiter-separated string representation of this deadline task
      */
     @Override
     public String export() {
         return String.format(
-                "D | %s | %s | %s",
-                this.getDoneCode(), this.name, this.deadline.format(DatetimeHelper.ISO_FORMATTER));
+                "D%c%s%c%s%c%s",
+                STORAGE_DELIMITER, this.getDoneCode(), STORAGE_DELIMITER, this.name,
+                STORAGE_DELIMITER, this.deadline.format(DatetimeHelper.ISO_FORMATTER));
     }
 
     /**

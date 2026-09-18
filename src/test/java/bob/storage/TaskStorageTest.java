@@ -78,6 +78,20 @@ public class TaskStorageTest {
     }
 
     @Test
+    void saveAndLoad_descriptionContainingPipe_preservesDescription() throws IOException, BobException {
+        Path testFile = tempDir.resolve("pipe_description.txt");
+        TaskStorage storage = new TaskStorage(testFile);
+        TaskList tasks = new TaskList();
+        tasks.add(new ToDo("compare option A | option B"));
+
+        storage.save(tasks);
+        TaskList loadedTasks = storage.load();
+
+        assertEquals("compare option A | option B", loadedTasks.get(0).getName());
+        assertEquals("T\u00010\u0001compare option A | option B", Files.readString(testFile).trim());
+    }
+
+    @Test
     public void load_emptyFileAndBlankLines_returnsEmptyTaskList() throws IOException, BobException {
         Path testFile = tempDir.resolve("empty_tasks.txt");
         Files.write(testFile, List.of("", "   ", ""));
@@ -104,21 +118,21 @@ public class TaskStorageTest {
     public void load_invalidTodoBeforeValidTodo_loadsValidTodoAndRemovesInvalidLine()
             throws IOException, BobException {
         Path testFile = tempDir.resolve("insufficient_fields.txt");
-        Files.write(testFile, List.of("T | 0", "T | 1 | testing"));
+        Files.write(testFile, List.of("T\u00010", "T\u00011\u0001testing"));
 
         TaskStorage storage = new TaskStorage(testFile);
         TaskList loadedTasks = storage.load();
 
         assertEquals(1, loadedTasks.size());
-        assertEquals("T | 1 | testing", loadedTasks.get(0).export());
+        assertEquals("T\u00011\u0001testing", loadedTasks.get(0).export());
         assertEquals(1, storage.getInvalidTaskCount());
-        assertEquals(List.of("T | 1 | testing"), Files.readAllLines(testFile));
+        assertEquals(List.of("T\u00011\u0001testing"), Files.readAllLines(testFile));
     }
 
     @Test
     public void load_corruptedDeadlineFieldCount_removesInvalidLine() throws IOException, BobException {
         Path testFile = tempDir.resolve("corrupted_deadline_count.txt");
-        Files.write(testFile, List.of("D | 0 | submit paper"));
+        Files.write(testFile, List.of("D\u00010\u0001submit paper"));
 
         TaskStorage storage = new TaskStorage(testFile);
         TaskList loadedTasks = storage.load();
@@ -130,7 +144,7 @@ public class TaskStorageTest {
     @Test
     public void load_corruptedDeadlineDateFormat_removesInvalidLine() throws IOException, BobException {
         Path testFile = tempDir.resolve("corrupted_deadline.txt");
-        Files.write(testFile, List.of("D | 0 | submit paper | invalid-date"));
+        Files.write(testFile, List.of("D\u00010\u0001submit paper\u0001invalid-date"));
 
         TaskStorage storage = new TaskStorage(testFile);
         TaskList loadedTasks = storage.load();
@@ -142,7 +156,7 @@ public class TaskStorageTest {
     @Test
     public void load_corruptedEventFieldCount_removesInvalidLine() throws IOException, BobException {
         Path testFile = tempDir.resolve("corrupted_event.txt");
-        Files.write(testFile, List.of("E | 0 | workshop | 2026-09-01T09:00"));
+        Files.write(testFile, List.of("E\u00010\u0001workshop\u00012026-09-01T09:00"));
 
         TaskStorage storage = new TaskStorage(testFile);
         TaskList loadedTasks = storage.load();
@@ -154,7 +168,7 @@ public class TaskStorageTest {
     @Test
     public void load_corruptedEventDateFormat_removesInvalidLine() throws IOException, BobException {
         Path testFile = tempDir.resolve("corrupted_event_date.txt");
-        Files.write(testFile, List.of("E | 0 | workshop | invalid-from | invalid-to"));
+        Files.write(testFile, List.of("E\u00010\u0001workshop\u0001invalid-from\u0001invalid-to"));
 
         TaskStorage storage = new TaskStorage(testFile);
         TaskList loadedTasks = storage.load();

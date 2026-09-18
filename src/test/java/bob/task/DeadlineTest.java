@@ -30,10 +30,10 @@ public class DeadlineTest {
         LocalDateTime time = LocalDateTime.of(2026, 11, 11, 18, 45);
         Deadline deadline = new Deadline("submit assignment", time);
 
-        assertEquals("D | 0 | submit assignment | 2026-11-11T18:45:00", deadline.export());
+        assertEquals("D\u00010\u0001submit assignment\u00012026-11-11T18:45:00", deadline.export());
 
         deadline.mark();
-        assertEquals("D | 1 | submit assignment | 2026-11-11T18:45:00", deadline.export());
+        assertEquals("D\u00011\u0001submit assignment\u00012026-11-11T18:45:00", deadline.export());
     }
 
     @Test

@@ -36,10 +36,12 @@ public class EventTest {
         LocalDateTime to = LocalDateTime.of(2026, 11, 11, 16, 0);
         Event event = new Event("project meeting", from, to);
 
-        assertEquals("E | 0 | project meeting | 2026-11-11T14:00:00 | 2026-11-11T16:00:00", event.export());
+        assertEquals("E\u00010\u0001project meeting\u00012026-11-11T14:00:00\u00012026-11-11T16:00:00",
+                event.export());
 
         event.mark();
-        assertEquals("E | 1 | project meeting | 2026-11-11T14:00:00 | 2026-11-11T16:00:00", event.export());
+        assertEquals("E\u00011\u0001project meeting\u00012026-11-11T14:00:00\u00012026-11-11T16:00:00",
+                event.export());
     }
 
     @Test

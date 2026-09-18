@@ -1,5 +1,6 @@
 package bob.parser;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -65,6 +66,18 @@ public class ParserTest {
     }
 
     @Test
+    void parse_nonPositiveTaskIndex_throwsOutOfBoundsError() {
+        BobException markException = assertThrows(BobException.class, () -> Parser.parse("mark 0"));
+        BobException deleteException = assertThrows(BobException.class, () -> Parser.parse("delete -1"));
+        BobException updateException = assertThrows(
+                BobException.class, () -> Parser.parse("update 0 /desc new name"));
+
+        assertEquals("Error: taskId out of bounds", markException.getMessage());
+        assertEquals("Error: taskId out of bounds", deleteException.getMessage());
+        assertEquals("Error: taskId out of bounds", updateException.getMessage());
+    }
+
+    @Test
     public void parse_todoCommand_returnsAddCommand() throws BobException {
         Command command = Parser.parse("todo read book");
         assertInstanceOf(AddCommand.class, command);
@@ -93,6 +106,14 @@ public class ParserTest {
     public void parse_deadlineInvalidDateFormat_throwsBobException() {
         assertThrows(BobException.class, () -> Parser.parse("deadline submit report /by 2026-11-11"));
         assertThrows(BobException.class, () -> Parser.parse("deadline submit report /by not-a-date"));
+    }
+
+    @Test
+    void parse_nonexistentDate_throwsBobException() {
+        assertThrows(BobException.class, () -> Parser.parse("deadline error /by 31/09/26 10:00"));
+        assertThrows(BobException.class, () -> Parser.parse(
+                "event error /from 31/09/26 10:00 /to 01/10/26 10:00"));
+        assertThrows(BobException.class, () -> Parser.parse("update 1 /by 31/09/26 10:00"));
     }
 
     @Test

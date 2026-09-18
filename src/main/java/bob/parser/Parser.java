@@ -3,6 +3,7 @@ package bob.parser;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 
 import bob.command.AddCommand;
@@ -58,7 +59,7 @@ public class Parser {
 
         String[] parts = fullCommand.trim().split(" ", 2);
         assert parts.length > 0 : "Command parts array should never be empty after splitting";
-        String commandWord = parts[0];
+        String commandWord = parts[0].toLowerCase(Locale.ROOT);
         assert commandWord != null && !commandWord.isEmpty() : "Command word should not be empty";
         String arguments = parts.length > 1 ? parts[1].trim() : "";
 
@@ -152,7 +153,7 @@ public class Parser {
             throw new BobException("deadline needs a description");
         }
 
-        String[] parts = args.split(DELIMITER_BY, 2);
+        String[] parts = splitOnDelimiter(args, DELIMITER_BY);
         if (parts.length < 2 || parts[0].isBlank() || parts[1].isBlank()) {
             throw new BobException("""
                     Error: No deadline set for deadline task
@@ -177,7 +178,7 @@ public class Parser {
             throw new BobException("event needs a description");
         }
 
-        String[] parts = args.split(DELIMITER_FROM, 2);
+        String[] parts = splitOnDelimiter(args, DELIMITER_FROM);
         if (parts.length < 2 || parts[0].isBlank()) {
             throw new BobException("""
                     Error: Missing either /from or /to
@@ -185,7 +186,7 @@ public class Parser {
                     """);
         }
 
-        String[] dateParts = parts[1].split(DELIMITER_TO, 2);
+        String[] dateParts = splitOnDelimiter(parts[1], DELIMITER_TO);
         if (dateParts.length < 2 || dateParts[0].isBlank() || dateParts[1].isBlank()) {
             throw new BobException("""
                     Error: Missing either /from or /to
@@ -213,6 +214,24 @@ public class Parser {
         } catch (DateTimeParseException e) {
             throw new BobException(MESSAGE_INVALID_DATE_FORMAT);
         }
+    }
+
+    /**
+     * Splits an argument string on a case-insensitive syntax delimiter while preserving user text.
+     *
+     * @param value the argument string to split
+     * @param delimiter the lowercase syntax delimiter
+     * @return the text before and after the first delimiter, or the original text if absent
+     */
+    private static String[] splitOnDelimiter(String value, String delimiter) {
+        int delimiterIndex = value.toLowerCase(Locale.ROOT).indexOf(delimiter);
+        if (delimiterIndex < 0) {
+            return new String[] { value };
+        }
+        return new String[] {
+            value.substring(0, delimiterIndex),
+            value.substring(delimiterIndex + delimiter.length())
+        };
     }
 
     /**
@@ -358,7 +377,7 @@ public class Parser {
      */
     private static FlagEntry parseFlagEntry(String segment, Set<String> seenFlags) throws BobException {
         String[] parts = segment.split("\\s+", 2);
-        String flag = parts[0];
+        String flag = parts[0].toLowerCase(Locale.ROOT);
         String value = parts.length > 1 ? parts[1].trim() : "";
 
         if (!VALID_UPDATE_FLAGS.contains(flag)) {
@@ -393,7 +412,7 @@ public class Parser {
         try {
             int id = Integer.parseInt(idString.trim());
             if (id <= 0) {
-                throw new BobException("Error: Argument must be an integer");
+                throw new BobException("Error: taskId out of bounds");
             }
             return id;
         } catch (NumberFormatException e) {

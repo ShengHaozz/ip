@@ -9,6 +9,11 @@ import bob.exception.BobException;
  */
 public abstract class Task {
     /**
+     * Separates fields in the persistent storage representation.
+     */
+    public static final char STORAGE_DELIMITER = 0x01;
+
+    /**
      * Stores the task description.
      */
     protected String name;

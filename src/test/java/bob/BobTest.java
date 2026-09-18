@@ -34,7 +34,7 @@ public class BobTest {
     @Test
     public void getGreeting_validAndInvalidStoredTasks_reportsLoadedTasksAndInvalidCount() throws IOException {
         Path testFile = tempDir.resolve("tasks.txt");
-        Files.write(testFile, List.of("T | 0", "T | 1 | testing"));
+        Files.write(testFile, List.of("T\u00010", "T\u00011\u0001testing"));
         Bob bob = new Bob(new TaskStorage(testFile));
 
         String greeting = bob.getGreeting();
@@ -63,6 +63,21 @@ public class BobTest {
         String response = bob.getResponse("LIST");
 
         assertTrue(response.contains("job board"));
+    }
+
+    @Test
+    void getResponse_mixedCaseDescriptions_preservesCapitalizationAfterReload() {
+        Path testFile = tempDir.resolve("case_sensitive_tasks.txt");
+        Bob bob = new Bob(new TaskStorage(testFile));
+
+        String addResponse = bob.getResponse("ToDo Prepare CS2103 Report for Alice");
+        String updateResponse = bob.getResponse("UPDATE 1 /DESC Buy Fresh Milk for Mum");
+        Bob reloadedBob = new Bob(new TaskStorage(testFile));
+        String listResponse = reloadedBob.getResponse("LIST");
+
+        assertTrue(addResponse.contains("Prepare CS2103 Report for Alice"));
+        assertTrue(updateResponse.contains("Buy Fresh Milk for Mum"));
+        assertTrue(listResponse.contains("Buy Fresh Milk for Mum"));
     }
 
     @Test

@@ -1,6 +1,7 @@
 package bob.util;
 
 import java.time.format.DateTimeFormatter;
+import java.time.format.ResolverStyle;
 
 /**
  * Provides date-time formatters used across the Bob application.
@@ -10,7 +11,8 @@ public class DatetimeHelper {
     /**
      * Provides a formatter for parsing user input date-time strings ({@code dd/MM/yy HH:mm}).
      */
-    public static final DateTimeFormatter INPUT_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yy HH:mm");
+    public static final DateTimeFormatter INPUT_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/uu HH:mm")
+            .withResolverStyle(ResolverStyle.STRICT);
 
     /**
      * Provides a formatter for displaying date-time strings to the user

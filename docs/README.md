@@ -8,11 +8,17 @@ Bob is a desktop chatbot that helps you keep track of todos, deadlines, and even
 2. Type a command in the input box.
 3. Press **Enter** or click **Run**.
 
+The conversation expands with the window when it is resized.
+
 Bob saves your tasks automatically. When Bob starts, it shows the tasks loaded from storage and the number of
 invalid stored tasks that were skipped.
 
 > **Date format:** Use `dd/MM/yy HH:mm` in 24-hour time. For example, `21/09/26 18:30` means
-> 21 September 2026 at 6:30 PM.
+> 21 September 2026 at 6:30 PM. Dates are checked strictly, so nonexistent dates such as `31/09/26 10:00`
+> are rejected.
+
+Command words and flags are case-insensitive. Task descriptions keep their original capitalization and may include
+the `|` character.
 
 ## Command summary
 
@@ -79,7 +85,7 @@ unmark 2
 delete 2
 ```
 
-Task indices can change after a deletion, so run `list` again when unsure.
+Task indices must be positive integers. They can change after a deletion, so run `list` again when unsure.
 
 ## Updating tasks
 
@@ -105,6 +111,12 @@ Only flags that apply to the task type are accepted:
 - Todos support `/desc`.
 - Deadlines support `/desc` and `/by`.
 - Events support `/desc`, `/from`, and `/to`.
+
+## Data storage
+
+Bob stores tasks in `data/tasks.txt`. Fields use the `0x01` control character as an internal delimiter, allowing task
+descriptions to contain `|` without data loss. Pipe-delimited files created by older versions are not supported and
+are reported as invalid stored tasks.
 
 ## Exiting
 
