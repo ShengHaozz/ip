@@ -24,9 +24,9 @@ import bob.util.DatetimeHelper;
  * </p>
  *
  * <pre>
- * {@link ToDo}:      T | status | name
- * {@link Deadline}:  D | status | name | deadline
- * {@link Event}:     E | status | name | from | to
+ * {@link ToDo}:      T &lt;0x01&gt; status &lt;0x01&gt; name
+ * {@link Deadline}:  D &lt;0x01&gt; status &lt;0x01&gt; name &lt;0x01&gt; deadline
+ * {@link Event}:     E &lt;0x01&gt; status &lt;0x01&gt; name &lt;0x01&gt; from &lt;0x01&gt; to
  * </pre>
  * <p>
  * The storage file is located at {@code ./data/tasks.txt}.
@@ -175,7 +175,6 @@ public class TaskStorage implements Storage<TaskList> {
  * Parses tasks from their persistent storage representation.
  */
 class TaskStorageParser {
-    private static final String STORAGE_DELIMITER_REGEX = " \\| ";
     private static final String TYPE_TODO = "T";
     private static final String TYPE_DEADLINE = "D";
     private static final String TYPE_EVENT = "E";
@@ -191,7 +190,7 @@ class TaskStorageParser {
      */
     Task parse(String line) throws BobException {
         assert line != null && !line.isBlank() : "Line to parse should not be null or blank";
-        String[] parts = line.split(STORAGE_DELIMITER_REGEX);
+        String[] parts = line.split(Character.toString(Task.STORAGE_DELIMITER), -1);
 
         if (parts.length < 3) {
             throw new BobException("Error: Invalid task export format: " + line);

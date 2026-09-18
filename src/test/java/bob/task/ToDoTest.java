@@ -29,13 +29,13 @@ public class ToDoTest {
     @Test
     public void export_unmarkedAndMarked_formattedCorrectly() {
         ToDo todo = new ToDo("buy milk");
-        assertEquals("T | 0 | buy milk", todo.export());
+        assertEquals("T\u00010\u0001buy milk", todo.export());
 
         todo.mark();
-        assertEquals("T | 1 | buy milk", todo.export());
+        assertEquals("T\u00011\u0001buy milk", todo.export());
 
         todo.unmark();
-        assertEquals("T | 0 | buy milk", todo.export());
+        assertEquals("T\u00010\u0001buy milk", todo.export());
     }
 
     @Test

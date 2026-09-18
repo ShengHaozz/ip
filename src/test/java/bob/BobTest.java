@@ -34,7 +34,7 @@ public class BobTest {
     @Test
     public void getGreeting_validAndInvalidStoredTasks_reportsLoadedTasksAndInvalidCount() throws IOException {
         Path testFile = tempDir.resolve("tasks.txt");
-        Files.write(testFile, List.of("T | 0", "T | 1 | testing"));
+        Files.write(testFile, List.of("T\u00010", "T\u00011\u0001testing"));
         Bob bob = new Bob(new TaskStorage(testFile));
 
         String greeting = bob.getGreeting();

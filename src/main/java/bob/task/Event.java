@@ -68,15 +68,16 @@ public class Event extends Task {
     /**
      * Formats the event task as a string suitable for persistent storage export.
      *
-     * @return pipe-delimited string representation of this event task
+     * @return delimiter-separated string representation of this event task
      */
     @Override
     public String export() {
         return String.format(
-                "E | %s | %s | %s | %s",
-                this.getDoneCode(),
-                this.name,
-                this.from.format(DatetimeHelper.ISO_FORMATTER),
+                "E%c%s%c%s%c%s%c%s",
+                STORAGE_DELIMITER, this.getDoneCode(),
+                STORAGE_DELIMITER, this.name,
+                STORAGE_DELIMITER, this.from.format(DatetimeHelper.ISO_FORMATTER),
+                STORAGE_DELIMITER,
                 this.to.format(DatetimeHelper.ISO_FORMATTER));
     }
 

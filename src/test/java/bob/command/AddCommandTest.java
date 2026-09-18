@@ -20,11 +20,11 @@ public class AddCommandTest extends CommandTestBase {
         command.execute(tasks, ui, storage);
 
         assertEquals(1, tasks.size());
-        assertEquals("T | 0 | read book", tasks.get(0).export());
+        assertEquals("T\u00010\u0001read book", tasks.get(0).export());
 
         TaskList loaded = storage.load();
         assertEquals(1, loaded.size());
-        assertEquals("T | 0 | read book", loaded.get(0).export());
+        assertEquals("T\u00010\u0001read book", loaded.get(0).export());
     }
 
     @Test

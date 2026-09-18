@@ -24,11 +24,11 @@ public class DeleteCommandTest extends CommandTestBase {
         command.execute(tasks, ui, storage);
 
         assertEquals(1, tasks.size());
-        assertEquals("T | 0 | task 2", tasks.get(0).export());
+        assertEquals("T\u00010\u0001task 2", tasks.get(0).export());
 
         TaskList loaded = storage.load();
         assertEquals(1, loaded.size());
-        assertEquals("T | 0 | task 2", loaded.get(0).export());
+        assertEquals("T\u00010\u0001task 2", loaded.get(0).export());
     }
 
     @Test

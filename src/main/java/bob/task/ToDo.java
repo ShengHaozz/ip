@@ -32,13 +32,14 @@ public class ToDo extends Task {
     /**
      * Formats the todo task as a string suitable for persistent storage export.
      *
-     * @return pipe-delimited string representation of this todo task
+     * @return delimiter-separated string representation of this todo task
      */
     @Override
     public String export() {
         return String.format(
-                "T | %s | %s",
-                this.getDoneCode(),
+                "T%c%s%c%s",
+                STORAGE_DELIMITER,
+                this.getDoneCode(), STORAGE_DELIMITER,
                 this.name);
     }
 
