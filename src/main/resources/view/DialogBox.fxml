@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.VBox?>
 
 <fx:root alignment="TOP_LEFT"
-         maxWidth="720.0"
+         maxWidth="1.7976931348623157E308"
          minWidth="0.0"
          spacing="8.0"
          styleClass="message-row"
