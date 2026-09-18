@@ -66,6 +66,21 @@ public class BobTest {
     }
 
     @Test
+    public void getResponse_mixedCaseDescriptions_preservesCapitalizationAfterReload() {
+        Path testFile = tempDir.resolve("case_sensitive_tasks.txt");
+        Bob bob = new Bob(new TaskStorage(testFile));
+
+        String addResponse = bob.getResponse("ToDo Prepare CS2103 Report for Alice");
+        String updateResponse = bob.getResponse("UPDATE 1 /DESC Buy Fresh Milk for Mum");
+        Bob reloadedBob = new Bob(new TaskStorage(testFile));
+        String listResponse = reloadedBob.getResponse("LIST");
+
+        assertTrue(addResponse.contains("Prepare CS2103 Report for Alice"));
+        assertTrue(updateResponse.contains("Buy Fresh Milk for Mum"));
+        assertTrue(listResponse.contains("Buy Fresh Milk for Mum"));
+    }
+
+    @Test
     public void getResponse_invalidCommand_setsErrorState() {
         Bob bob = new Bob();
 
