@@ -14,7 +14,7 @@ import org.w3c.dom.Document;
 public class DialogBoxLayoutTest {
 
     @Test
-    public void dialogBoxFxml_maxWidth_allowsRowToFillConversation() throws Exception {
+    void dialogBoxFxml_maxWidth_allowsRowToFillConversation() throws Exception {
         try (InputStream fxml = DialogBoxLayoutTest.class.getResourceAsStream("/view/DialogBox.fxml")) {
             Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(fxml);
 

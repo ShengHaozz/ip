@@ -66,7 +66,7 @@ public class BobTest {
     }
 
     @Test
-    public void getResponse_mixedCaseDescriptions_preservesCapitalizationAfterReload() {
+    void getResponse_mixedCaseDescriptions_preservesCapitalizationAfterReload() {
         Path testFile = tempDir.resolve("case_sensitive_tasks.txt");
         Bob bob = new Bob(new TaskStorage(testFile));
 

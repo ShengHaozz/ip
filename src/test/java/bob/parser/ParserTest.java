@@ -66,7 +66,7 @@ public class ParserTest {
     }
 
     @Test
-    public void parse_nonPositiveTaskIndex_throwsOutOfBoundsError() {
+    void parse_nonPositiveTaskIndex_throwsOutOfBoundsError() {
         BobException markException = assertThrows(BobException.class, () -> Parser.parse("mark 0"));
         BobException deleteException = assertThrows(BobException.class, () -> Parser.parse("delete -1"));
         BobException updateException = assertThrows(
@@ -109,7 +109,7 @@ public class ParserTest {
     }
 
     @Test
-    public void parse_nonexistentDate_throwsBobException() {
+    void parse_nonexistentDate_throwsBobException() {
         assertThrows(BobException.class, () -> Parser.parse("deadline error /by 31/09/26 10:00"));
         assertThrows(BobException.class, () -> Parser.parse(
                 "event error /from 31/09/26 10:00 /to 01/10/26 10:00"));

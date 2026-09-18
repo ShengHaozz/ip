@@ -78,7 +78,7 @@ public class TaskStorageTest {
     }
 
     @Test
-    public void saveAndLoad_descriptionContainingPipe_preservesDescription() throws IOException, BobException {
+    void saveAndLoad_descriptionContainingPipe_preservesDescription() throws IOException, BobException {
         Path testFile = tempDir.resolve("pipe_description.txt");
         TaskStorage storage = new TaskStorage(testFile);
         TaskList tasks = new TaskList();
