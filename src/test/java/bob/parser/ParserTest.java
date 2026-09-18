@@ -1,5 +1,6 @@
 package bob.parser;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -62,6 +63,18 @@ public class ParserTest {
     public void parse_deleteInvalidInteger_throwsBobException() {
         assertThrows(BobException.class, () -> Parser.parse("delete xyz"));
         assertThrows(BobException.class, () -> Parser.parse("delete"));
+    }
+
+    @Test
+    public void parse_nonPositiveTaskIndex_throwsOutOfBoundsError() {
+        BobException markException = assertThrows(BobException.class, () -> Parser.parse("mark 0"));
+        BobException deleteException = assertThrows(BobException.class, () -> Parser.parse("delete -1"));
+        BobException updateException = assertThrows(
+                BobException.class, () -> Parser.parse("update 0 /desc new name"));
+
+        assertEquals("Error: taskId out of bounds", markException.getMessage());
+        assertEquals("Error: taskId out of bounds", deleteException.getMessage());
+        assertEquals("Error: taskId out of bounds", updateException.getMessage());
     }
 
     @Test

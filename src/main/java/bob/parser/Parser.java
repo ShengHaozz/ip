@@ -393,7 +393,7 @@ public class Parser {
         try {
             int id = Integer.parseInt(idString.trim());
             if (id <= 0) {
-                throw new BobException("Error: Argument must be an integer");
+                throw new BobException("Error: taskId out of bounds");
             }
             return id;
         } catch (NumberFormatException e) {
